@@ -2,13 +2,10 @@ package com.natalinstanislav.restaurants;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.DataJpaRestaurantRepository;
-import com.natalinstanislav.restaurants.repository.DataJpaUserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.natalinstanislav.restaurants.repository.restaurant.DataJpaRestaurantRepository;
+import com.natalinstanislav.restaurants.repository.user.DataJpaUserRepository;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.util.Arrays;
 

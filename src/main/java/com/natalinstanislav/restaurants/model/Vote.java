@@ -2,34 +2,35 @@ package com.natalinstanislav.restaurants.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "votes_unique_user_date_idx")})
 public class Vote extends AbstractBaseEntity {
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
     @NotNull
-    private LocalDateTime dateTime;
+    private LocalDate date;
 
     public Vote() {
     }
 
-    public Vote(Restaurant restaurant, LocalDateTime dateTime) {
-        this(null, restaurant, dateTime);
+    public Vote(Restaurant restaurant, LocalDate date, User user) {
+        this(null, restaurant, date, user);
     }
 
-    public Vote(Integer id, Restaurant restaurant, LocalDateTime dateTime) {
+    public Vote(Integer id, Restaurant restaurant, LocalDate date, User user) {
         super(id);
         this.restaurant = restaurant;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.user = user;
     }
 
     public User getUser() {
@@ -40,8 +41,8 @@ public class Vote extends AbstractBaseEntity {
         return restaurant;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDate getDateTime() {
+        return date;
     }
 
     public void setUser(User user) {
@@ -52,15 +53,15 @@ public class Vote extends AbstractBaseEntity {
         this.restaurant = restaurant;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDateTime(LocalDate date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
         return "Vote{" +
                 "restaurant=" + restaurant +
-                ", dateTime=" + dateTime +
+                ", date=" + date +
                 ", id=" + id +
                 '}';
     }

@@ -1,12 +1,11 @@
 package com.natalinstanislav.restaurants.web.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.repository.RestaurantRepository;
+import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
 import com.natalinstanislav.restaurants.util.ValidationUtil;
 import com.natalinstanislav.restaurants.web.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 

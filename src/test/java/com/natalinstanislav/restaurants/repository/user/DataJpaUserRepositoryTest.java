@@ -1,15 +1,20 @@
-package com.natalinstanislav.restaurants.repository;
+package com.natalinstanislav.restaurants.repository.user;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
+import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +32,14 @@ public class DataJpaUserRepositoryTest {
 
     @Autowired
     protected UserRepository repository;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Before
+    public void setUp() throws Exception {
+        cacheManager.getCache("users").clear();
+    }
 
     @Test
     public void get() {
@@ -63,7 +76,19 @@ public class DataJpaUserRepositoryTest {
 
     @Test
     public void delete() throws Exception {
+        Assertions.assertThat(repository.get(ADMIN_ID)).isNotNull();
         repository.delete(ADMIN_ID);
+        System.out.println(repository.get(ADMIN_ID));
         assertMatch(null, repository.get(ADMIN_ID));
+    }
+
+    @Test
+//    @Transactional
+    public void getWithVotes() throws Exception {
+        User admin0 = repository.get(ADMIN_ID);
+//        System.out.println(admin0.getVotes());
+        User admin = repository.getWithVotes(ADMIN_ID);
+        System.out.println(admin.getVotes());
+
     }
 }

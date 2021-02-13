@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository;
+package com.natalinstanislav.restaurants.repository.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;

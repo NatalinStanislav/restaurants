@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository;
+package com.natalinstanislav.restaurants.repository.user;
 
 import com.natalinstanislav.restaurants.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -21,5 +21,4 @@ public interface JpaUserRepository extends JpaRepository<User, Integer> {
     @EntityGraph(attributePaths = {"votes"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.id=?1")
     User getWithVotes(int id);
-
 }

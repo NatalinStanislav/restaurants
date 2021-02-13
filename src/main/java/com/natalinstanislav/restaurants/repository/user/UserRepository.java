@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository;
+package com.natalinstanislav.restaurants.repository.user;
 
 import com.natalinstanislav.restaurants.model.User;
 
@@ -18,5 +18,7 @@ public interface UserRepository {
     User getByEmail(String email);
 
     List<User> getAll();
+
+    User getWithVotes(int id);
 
 }

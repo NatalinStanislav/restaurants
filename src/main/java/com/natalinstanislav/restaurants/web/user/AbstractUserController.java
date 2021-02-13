@@ -1,10 +1,9 @@
 package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.UserRepository;
+import com.natalinstanislav.restaurants.repository.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.List;
