@@ -2,7 +2,7 @@ package com.natalinstanislav.restaurants.repository.user;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.repository.JpaUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,11 +34,15 @@ public class DataJpaUserRepositoryTest {
     protected UserRepository repository;
 
     @Autowired
+    protected JpaUtil jpaUtil;
+
+    @Autowired
     private CacheManager cacheManager;
 
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
+        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test

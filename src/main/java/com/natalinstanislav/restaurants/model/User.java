@@ -1,6 +1,10 @@
 package com.natalinstanislav.restaurants.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -11,6 +15,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractNamedEntity {
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -30,11 +35,13 @@ public class User extends AbstractNamedEntity {
     @NotNull
     private Date registered = new Date();
 
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")})
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 200)
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
