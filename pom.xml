@@ -21,8 +21,9 @@
         <tomcat.version>9.0.41</tomcat.version>
 
         <!--    Tests  -->
-        <junit.version>4.13.1</junit.version>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <assertj.version>3.17.2</assertj.version>
+        <hamcrest.version>2.2</hamcrest.version>
 
         <!-- Logging -->
         <logback.version>1.2.3</logback.version>
@@ -114,9 +115,15 @@
 
         <!--Test-->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -175,6 +182,17 @@
             <version>2.4.0-b180830.0438</version>
         </dependency>
 
+        <!--Web-->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

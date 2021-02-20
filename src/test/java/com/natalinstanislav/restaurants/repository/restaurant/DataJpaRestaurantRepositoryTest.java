@@ -2,15 +2,13 @@ package com.natalinstanislav.restaurants.repository.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
@@ -21,7 +19,6 @@ import static com.natalinstanislav.restaurants.RestaurantTestData.*;
         "classpath:spring/spring-db.xml"
 })
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@RunWith(SpringRunner.class)
 public class DataJpaRestaurantRepositoryTest {
 
     @Autowired
@@ -30,13 +27,13 @@ public class DataJpaRestaurantRepositoryTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cacheManager.getCache("restaurants").clear();
     }
 
     @Test
-    public void save() {
+    void save() {
         Restaurant newRestaurant = getNew();
         Restaurant created = repository.save(newRestaurant);
         Integer newId = created.getId();
@@ -46,20 +43,20 @@ public class DataJpaRestaurantRepositoryTest {
     }
 
     @Test
-    public void delete() {
+    void delete() {
         Assertions.assertThat(repository.get(PIZZA_HUT_ID)).isNotNull();
         repository.delete(PIZZA_HUT_ID);
         assertMatch(null, repository.get(PIZZA_HUT_ID));
     }
 
         @Test
-    public void get() {
+    void get() {
         Restaurant restaurant = repository.get(PIZZA_HUT_ID);
         assertMatch(restaurant, PizzaHut);
     }
 
     @Test
-    public void getAll() {
+    void getAll() {
         List<Restaurant> all = repository.getAll();
         assertMatch(all, KebabHouse, PizzaHut, SushiRoll);
     }
