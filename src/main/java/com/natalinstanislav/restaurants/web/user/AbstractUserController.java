@@ -24,20 +24,18 @@ public abstract class AbstractUserController {
 
     public User get(int id) {
         log.info("get {}", id);
-        checkNotFoundWithId(repository.get(id), id);
         return repository.get(id);
     }
 
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        Assert.notNull(user, "user must not be null");
         return repository.save(user);
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        checkNotFoundWithId(repository.delete(id), id);
+        repository.delete(id);
     }
 
     public void update(User user, int id) {

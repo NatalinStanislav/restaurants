@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
+    public static final int NOT_FOUND = 123456;
     public static final int USER0_ID = START_SEQ;
     public static final int USER1_ID = START_SEQ + 1;
     public static final int USER2_ID = START_SEQ + 2;

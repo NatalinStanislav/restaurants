@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.repository.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import org.assertj.core.api.Assertions;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -44,15 +45,24 @@ public class DataJpaRestaurantRepositoryTest {
 
     @Test
     void delete() {
-        Assertions.assertThat(repository.get(PIZZA_HUT_ID)).isNotNull();
         repository.delete(PIZZA_HUT_ID);
-        assertMatch(null, repository.get(PIZZA_HUT_ID));
+        assertThrows(NotFoundException.class, () -> repository.get(PIZZA_HUT_ID));
     }
 
-        @Test
+    @Test
+    void deletedNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.delete(NOT_FOUND));
+    }
+
+    @Test
     void get() {
         Restaurant restaurant = repository.get(PIZZA_HUT_ID);
         assertMatch(restaurant, PizzaHut);
+    }
+
+    @Test
+    void getNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.get(NOT_FOUND));
     }
 
     @Test

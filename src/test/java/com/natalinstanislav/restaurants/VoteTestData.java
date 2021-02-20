@@ -12,6 +12,7 @@ import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SE
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VoteTestData {
+    public static final int NOT_FOUND = 123456;
     public static final int VOTE_USER0_30_OF_JANUARY_ID = START_SEQ + 21;
     public static final int VOTE_USER1_30_OF_JANUARY_ID = START_SEQ + 22;
     public static final int VOTE_USER2_30_OF_JANUARY_ID = START_SEQ + 23;

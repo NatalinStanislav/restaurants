@@ -3,6 +3,7 @@ package com.natalinstanislav.restaurants.repository.user;
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.JpaUtil;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,11 @@ public class DataJpaUserRepositoryTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.get(NOT_FOUND));
+    }
+
+    @Test
     void duplicateMailCreate() throws Exception {
         assertThrows(DataAccessException.class, () ->
                 repository.save(new User(null, "Duplicate", "user0@yandex.ru", "newPass", Role.USER)));
@@ -77,10 +83,13 @@ public class DataJpaUserRepositoryTest {
 
     @Test
     void delete() throws Exception {
-        Assertions.assertThat(repository.get(ADMIN_ID)).isNotNull();
         repository.delete(ADMIN_ID);
-        System.out.println(repository.get(ADMIN_ID));
-        assertMatch(null, repository.get(ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> repository.get(ADMIN_ID));
+    }
+
+    @Test
+    void deletedNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.delete(NOT_FOUND));
     }
 
     @Test

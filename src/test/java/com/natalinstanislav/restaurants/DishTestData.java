@@ -11,6 +11,7 @@ import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SE
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DishTestData {
+    public static final int NOT_FOUND = 123456;
     public static final int MEXICAN_PIZZA_ID = START_SEQ + 9;
     public static final int ITALIAN_SALAD_ID = START_SEQ + 10;
     public static final int CAPPUCCINO_ID = START_SEQ + 11;

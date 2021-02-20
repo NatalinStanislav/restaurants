@@ -27,7 +27,7 @@ public class RestaurantRestController {
     public void delete(int id) {
         int userId = SecurityUtil.authUserId();
         log.info("delete restaurant {} by user {}", id, userId);
-        ValidationUtil.checkNotFoundWithId(repository.delete(id), id);
+        repository.delete(id);
     }
 
     public List<Restaurant> getAll() {

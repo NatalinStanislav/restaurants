@@ -5,8 +5,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.util.List;
+
+import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class DataJpaRestaurantRepository implements RestaurantRepository {
@@ -21,18 +24,19 @@ public class DataJpaRestaurantRepository implements RestaurantRepository {
     @Override
     @CacheEvict(value = "restaurants", allEntries = true)
     public Restaurant save(Restaurant restaurant) {
+        Assert.notNull(restaurant, "restaurant must not be null");
         return restaurantRepository.save(restaurant);
     }
 
     @Override
     @CacheEvict(value = "restaurants", allEntries = true)
-    public boolean delete(int id) {
-        return restaurantRepository.delete(id) != 0;
+    public void delete(int id) {
+        checkNotFoundWithId(restaurantRepository.delete(id) != 0, id);
     }
 
     @Override
     public Restaurant get(int id) {
-        return restaurantRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
     }
 
     @Override

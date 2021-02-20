@@ -5,8 +5,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.util.List;
+
+import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class DataJpaUserRepository implements UserRepository {
@@ -20,7 +23,7 @@ public class DataJpaUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        return userRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(userRepository.findById(id).orElse(null), id);
     }
 
     @Override
@@ -37,13 +40,14 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     @CacheEvict(value = "users", allEntries = true)
     public User save(User user) {
+        Assert.notNull(user, "user must not be null");
         return userRepository.save(user);
     }
 
     @Override
     @CacheEvict(value = "users", allEntries = true)
-    public boolean delete(int id) {
-        return userRepository.delete(id) != 0;
+    public void delete(int id) {
+        checkNotFoundWithId(userRepository.delete(id) != 0, id);
     }
 
     @Override

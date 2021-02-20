@@ -1,6 +1,7 @@
 package com.natalinstanislav.restaurants.repository.vote;
 
 import com.natalinstanislav.restaurants.model.Vote;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.natalinstanislav.restaurants.DishTestData.NOT_FOUND;
 import static com.natalinstanislav.restaurants.UserTestData.USER3_ID;
 import static com.natalinstanislav.restaurants.VoteTestData.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -36,15 +39,24 @@ public class DataJpaVoteRepositoryTest {
 
     @Test
     void delete() {
-        Assertions.assertThat(repository.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
         repository.delete(VOTE_USER0_30_OF_JANUARY_ID);
-        assertMatch(null, repository.get(VOTE_USER0_30_OF_JANUARY_ID));
+        assertThrows(NotFoundException.class, () -> repository.get(VOTE_USER0_30_OF_JANUARY_ID));
+    }
+
+    @Test
+    void deletedNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.delete(NOT_FOUND));
     }
 
     @Test
     void get() {
         Vote vote = repository.get(VOTE_ADMIN_30_OF_JANUARY_ID);
         assertMatch(vote, VoteAdminJanuary30);
+    }
+
+    @Test
+    void getNotFound() throws Exception {
+        assertThrows(NotFoundException.class, () -> repository.get(NOT_FOUND));
     }
 
     @Test
