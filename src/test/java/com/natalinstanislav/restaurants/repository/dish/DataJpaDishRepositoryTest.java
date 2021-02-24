@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.DishTestData.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -37,13 +37,14 @@ public class DataJpaDishRepositoryTest {
 
     @Test
     void delete() {
+        Assertions.assertThat(repository.get(FISH_SALAD_ID)).isNotNull();
         repository.delete(FISH_SALAD_ID);
-        assertThrows(NotFoundException.class, () -> repository.get(FISH_SALAD_ID));
+        assertMatch(null, repository.get(FISH_SALAD_ID));
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertThrows(NotFoundException.class, () -> repository.delete(NOT_FOUND));
+        assertFalse(repository.delete(NOT_FOUND));
     }
 
     @Test
@@ -54,12 +55,11 @@ public class DataJpaDishRepositoryTest {
 
     @Test
     void getNotFound() throws Exception {
-        assertThrows(NotFoundException.class, () -> repository.get(NOT_FOUND));
+        assertMatch(null, repository.get(NOT_FOUND));
     }
 
     @Test
     void getAll() {
-//        repository.getAll().forEach(System.out::println);
         List<Dish> all = repository.getAll();
         assertMatch(all, ALL_DISHES);
     }

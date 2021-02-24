@@ -2,37 +2,32 @@ package com.natalinstanislav.restaurants;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.restaurant.DataJpaRestaurantRepository;
-import com.natalinstanislav.restaurants.repository.user.DataJpaUserRepository;
+import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
+import com.natalinstanislav.restaurants.repository.user.UserRepository;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Arrays;
 
-/**
- * @see <a href="http://topjava.herokuapp.com">Demo application</a>
- * @see <a href="https://github.com/JavaOPs/topjava">Initial project</a>
- */
 public class Main {
     public static void main(String[] args) {
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml")) {
 
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
-            DataJpaRestaurantRepository repository = appCtx.getBean(DataJpaRestaurantRepository.class);
+            RestaurantRepository repository = appCtx.getBean(RestaurantRepository.class);
             System.out.println(repository.get(100006));
 
-            DataJpaUserRepository repositoryUser = appCtx.getBean(DataJpaUserRepository.class);
-            System.out.println(repositoryUser.get(100005));
+            UserRepository userRepository = appCtx.getBean(UserRepository.class);
+            System.out.println(userRepository.get(100005));
 
-            User user = new User(100024,"www", "www@mail.ru", "qwerty", Role.ADMIN);
-            repositoryUser.save(user);
+            User user = new User(null,"www", "www@mail.ru", "qwerty", Role.ADMIN);
+            userRepository.save(user);
 
-            System.out.println(repositoryUser.get(100024));
+            System.out.println(userRepository.get(100030));
 
-            User nextUser = repositoryUser.get(100005);
-            System.out.println(nextUser.getVotes());
+            User nextUser = userRepository.get(100005);
+//            System.out.println(nextUser.getVotes());
 
         }
-
         }
 }

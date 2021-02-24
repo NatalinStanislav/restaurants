@@ -4,7 +4,7 @@ import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-//    @Autowired
+    @Autowired
     protected UserRepository repository;
 
     public List<User> getAll() {

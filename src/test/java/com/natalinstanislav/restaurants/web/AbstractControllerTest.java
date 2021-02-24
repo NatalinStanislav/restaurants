@@ -22,11 +22,6 @@ abstract public class AbstractControllerTest {
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
-    static {
-        CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
-        CHARACTER_ENCODING_FILTER.setForceEncoding(true);
-    }
-
     private MockMvc mockMvc;
 
     @Autowired
@@ -36,7 +31,6 @@ abstract public class AbstractControllerTest {
     private void postConstruct() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
-                .addFilter(CHARACTER_ENCODING_FILTER)
                 .build();
     }
 

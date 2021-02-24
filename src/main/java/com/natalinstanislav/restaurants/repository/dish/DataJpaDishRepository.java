@@ -3,12 +3,9 @@ package com.natalinstanislav.restaurants.repository.dish;
 import com.natalinstanislav.restaurants.model.Dish;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class DataJpaDishRepository implements DishRepository {
@@ -22,18 +19,17 @@ public class DataJpaDishRepository implements DishRepository {
 
     @Override
     public Dish save(Dish dish) {
-        Assert.notNull(dish, "dish must not be null");
         return dishRepository.save(dish);
     }
 
     @Override
-    public void delete(int id) {
-        checkNotFoundWithId(dishRepository.delete(id) != 0, id);
+    public boolean delete(int id) {
+        return dishRepository.delete(id) != 0;
     }
 
     @Override
     public Dish get(int id) {
-        return checkNotFoundWithId(dishRepository.findById(id).orElse(null), id);
+        return dishRepository.findById(id).orElse(null);
     }
 
     @Override
