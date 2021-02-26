@@ -5,11 +5,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class DataJpaRestaurantRepository implements RestaurantRepository {
@@ -24,24 +23,33 @@ public class DataJpaRestaurantRepository implements RestaurantRepository {
     @Override
     @CacheEvict(value = "restaurants", allEntries = true)
     public Restaurant save(Restaurant restaurant) {
-        Assert.notNull(restaurant, "restaurant must not be null");
         return restaurantRepository.save(restaurant);
     }
 
     @Override
     @CacheEvict(value = "restaurants", allEntries = true)
-    public void delete(int id) {
-        checkNotFoundWithId(restaurantRepository.delete(id) != 0, id);
+    public boolean delete(int id) {
+        return restaurantRepository.delete(id) != 0;
     }
 
     @Override
     public Restaurant get(int id) {
-        return checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
+        return restaurantRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Restaurant getWithMenu(int id, LocalDate date) {
+        return restaurantRepository.getWithMenu(id, date);
     }
 
     @Override
     @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         return restaurantRepository.findAll(SORT_NAME);
+    }
+
+    @Override
+    public List<Restaurant> getAllWithMenu(LocalDate date) {
+        return restaurantRepository.getAllWithMenu(date);
     }
 }

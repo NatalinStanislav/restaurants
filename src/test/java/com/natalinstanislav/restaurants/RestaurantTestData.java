@@ -1,17 +1,23 @@
 package com.natalinstanislav.restaurants;
 
+import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.model.Role;
-import com.natalinstanislav.restaurants.model.User;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
+    public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "dishes");
+    public static TestMatcher<Restaurant> RESTAURANT_WITH_MENU_MATCHER =
+            TestMatcher.usingAssertions(Restaurant.class,
+                    (a, e) -> assertThat(a).usingRecursiveComparison()
+                            .ignoringFields("dishes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
+                    (a, e) -> assertThat(a).usingRecursiveComparison()
+                            .ignoringFields("dishes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
+
     public static final int NOT_FOUND = 123456;
     public static final int PIZZA_HUT_ID = START_SEQ + 6;
     public static final int SUSHI_ROLL_ID = START_SEQ + 7;
@@ -21,20 +27,16 @@ public class RestaurantTestData {
     public static final Restaurant SushiRoll = new Restaurant(SUSHI_ROLL_ID, "Sushi Roll");
     public static final Restaurant KebabHouse = new Restaurant(KEBAB_HOUSE_ID, "Kebab House");
 
+    public static List<Restaurant> ALL_RESTAURANTS = List.of(KebabHouse, PizzaHut, SushiRoll);
+
+
     public static Restaurant getNew() {
         return new Restaurant(null, "NewRestaurant");
     }
 
-    public static void assertMatch(Restaurant actual, Restaurant expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("dishes").isEqualTo(expected);
+    public static Restaurant getUpdated() {
+        return new Restaurant(PIZZA_HUT_ID, "NEW Pizza Hut");
     }
 
-    public static void assertMatch(Iterable<Restaurant> actual, Restaurant... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<Restaurant> actual, Iterable<Restaurant> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("dishes").isEqualTo(expected);
-    }
 
 }

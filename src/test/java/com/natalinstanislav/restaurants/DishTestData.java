@@ -11,6 +11,8 @@ import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SE
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DishTestData {
+    public static TestMatcher<Dish> DISH_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Dish.class, "restaurant");
+
     public static final int NOT_FOUND = 123456;
     public static final int MEXICAN_PIZZA_ID = START_SEQ + 9;
     public static final int ITALIAN_SALAD_ID = START_SEQ + 10;
@@ -38,6 +40,9 @@ public class DishTestData {
     public static final Dish Chips = new Dish(CHIPS_ID, "Chips", 299, PizzaHut, LocalDate.of(2020, 1, 31));
     public static final Dish Tea = new Dish(TEA_ID, "Tea", 99, PizzaHut, LocalDate.of(2020, 1, 31));
 
+    public static String ISO_30_OF_JANUARY = "2020-01-30";
+    public static LocalDate LOCALDATE_30_OF_JANUARY = LocalDate.of(2020, 1, 30);
+
     public static List<Dish> ALL_DISHES = List.of(MexicanPizza, ItalianSalad, Cappuccino, PhiladelphiaRoll, FishSalad, GreenTea,
             KebabXXL, GarlicSauce, Beer, HotDog, Chips, Tea);
 
@@ -46,19 +51,19 @@ public class DishTestData {
 
     public static List<Dish> ALL_DISHES_FROM_30_OF_JANUARY_FROM_PIZZA_HUT = List.of(MexicanPizza, ItalianSalad, Cappuccino);
 
+    public static List<Dish> ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY = List.of(MexicanPizza, ItalianSalad, Cappuccino);
+
+    public static List<Dish> ALL_DISHES_FROM_SUSHI_ROLL_30_OF_JANUARY = List.of(PhiladelphiaRoll, FishSalad, GreenTea);
+
+    public static List<Dish> ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY = List.of(KebabXXL, GarlicSauce, Beer);
+
+    public static List<Dish> RANDOM_DISHES = List.of(KebabXXL, PhiladelphiaRoll, MexicanPizza);
+
     public static Dish getNew() {
         return new Dish(null, "NewDish", 444, PizzaHut, LocalDate.of(2020, 1, 29));
     }
 
-    public static void assertMatch(Dish actual, Dish expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("restaurant").isEqualTo(expected);
-    }
-
-    public static void assertMatch(Iterable<Dish> actual, Dish... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<Dish> actual, Iterable<Dish> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("restaurant").isEqualTo(expected);
+    public static Dish getUpdated() {
+        return new Dish(MEXICAN_PIZZA_ID, MexicanPizza.getName(), 555, MexicanPizza.getRestaurant(), MexicanPizza.getDate());
     }
 }

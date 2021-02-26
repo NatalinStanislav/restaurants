@@ -1,5 +1,7 @@
 package com.natalinstanislav.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import java.util.List;
 public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
+    @JsonManagedReference
     private List<Dish> dishes;
 
     public Restaurant() {
@@ -33,7 +36,8 @@ public class Restaurant extends AbstractNamedEntity {
     @Override
     public String toString() {
         return "Restaurant{" +
-                "name='" + name + '\'' +
+                "dishes=" + dishes +
+                ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
     }

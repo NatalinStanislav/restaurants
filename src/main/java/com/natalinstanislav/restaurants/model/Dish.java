@@ -1,5 +1,6 @@
 package com.natalinstanislav.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Range;
 
@@ -17,6 +18,8 @@ public class Dish extends AbstractNamedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @NotNull
+    @JsonBackReference
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
