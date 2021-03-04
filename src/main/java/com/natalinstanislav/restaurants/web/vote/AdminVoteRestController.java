@@ -26,8 +26,11 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 public class AdminVoteRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
+
+    public AdminVoteRestController(VoteRepository voteRepository) {
+        this.voteRepository = voteRepository;
+    }
 
     @GetMapping("/{id}")
     public Vote get(@PathVariable int id) {

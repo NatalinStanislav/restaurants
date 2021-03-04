@@ -5,6 +5,7 @@ import com.natalinstanislav.restaurants.model.User;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,9 +34,15 @@ public class UserTestData {
     public static final User user4 = new User(USER4_ID, "User4", "user4@yandex.ru", "password4", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
 
+    public static List<User> ALL_USERS = List.of(admin, user0, user1, user2, user3, user4);
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
     }
 
+    public static User getUpdated() {
+        User updated = new User(user3);
+        updated.setName("UpdatedName");
+        return updated;
+    }
 }

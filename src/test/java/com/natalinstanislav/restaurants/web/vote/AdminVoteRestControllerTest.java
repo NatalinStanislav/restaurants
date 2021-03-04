@@ -25,7 +25,6 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
     @Autowired
     private VoteRepository voteRepository;
 
-
     @Test
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID))
@@ -97,7 +96,6 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         Vote updated = getUpdated();
-        System.out.println();
         perform(MockMvcRequestBuilders.put("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID + "?restaurantId=" + SUSHI_ROLL_ID + "&userId=" + USER3_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))

@@ -47,6 +47,14 @@ public class AdminRestaurantRestController {
         return restaurantRepository.getWithMenu(id, date);
     }
 
+    @GetMapping("/{id}/withMenuAndRating")
+    public RestaurantTo getWithMenuAndRating(@PathVariable int id, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        log.info("getWithMenuAndRating restaurant with id {} with menu from date {}", id, date);
+        Restaurant restaurant = restaurantRepository.getWithMenu(id, date);
+        int rating = voteRepository.getAllByDateForRestaurant(date, id).size();
+        return RestaurantUtil.createTo(restaurant, rating);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
@@ -64,6 +72,14 @@ public class AdminRestaurantRestController {
     public List<Restaurant> getAllWithMenu(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAllWithMenu from date {}", date);
         return restaurantRepository.getAllWithMenu(date);
+    }
+
+    @GetMapping("/withMenuAndRating")
+    public List<RestaurantTo> getAllWithMenuAndRating(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        log.info("getAllWithMenuAndRating from date {}", date);
+        List<Restaurant> restaurants = restaurantRepository.getAllWithMenu(date);
+        Map<Restaurant,Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteRepository.getAllByDate(date));
+        return RestaurantUtil.getTos(restaurants, restaurantRatingMap);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -85,21 +101,5 @@ public class AdminRestaurantRestController {
         Assert.notNull(restaurant, "restaurant must not be null");
         assureIdConsistent(restaurant, id);
         checkNotFoundWithId(restaurantRepository.save(restaurant), restaurant.getId());
-    }
-
-    @GetMapping("/{id}/withMenuAndRating")
-    public RestaurantTo getWithMenuAndRating(@PathVariable int id, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        log.info("getWithMenuAndRating restaurant with id {} with menu from date {}", id, date);
-        Restaurant restaurant = restaurantRepository.getWithMenu(id, date);
-        int rating = voteRepository.getAllByDateForRestaurant(date, id).size();
-        return RestaurantUtil.createTo(restaurant, rating);
-    }
-
-    @GetMapping("/withMenuAndRating")
-    public List<RestaurantTo> getAllWithMenuAndRating(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        log.info("getAllWithMenuAndRating from date {}", date);
-        List<Restaurant> restaurants = restaurantRepository.getAllWithMenu(date);
-        Map<Restaurant,Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteRepository.getAllByDate(date));
-        return RestaurantUtil.getTos(restaurants, restaurantRatingMap);
     }
 }
