@@ -1,5 +1,7 @@
 package com.natalinstanislav.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -9,10 +11,13 @@ import java.time.LocalDate;
 public class Vote extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @NotNull
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
@@ -20,6 +25,11 @@ public class Vote extends AbstractBaseEntity {
     private LocalDate date;
 
     public Vote() {
+    }
+
+    public Vote(Integer id, LocalDate date) {
+        super(id);
+        this.date = date;
     }
 
     public Vote(Restaurant restaurant, LocalDate date, User user) {

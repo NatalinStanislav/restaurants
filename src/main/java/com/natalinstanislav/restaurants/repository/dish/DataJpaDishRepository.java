@@ -1,6 +1,7 @@
 package com.natalinstanislav.restaurants.repository.dish;
 
 import com.natalinstanislav.restaurants.model.Dish;
+import com.natalinstanislav.restaurants.repository.restaurant.JpaRestaurantRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -12,13 +13,16 @@ public class DataJpaDishRepository implements DishRepository {
     private static final Sort SORT_RESTAURANT_DATE = Sort.by(Sort.Direction.ASC, "date", "restaurant", "id");
 
     private final JpaDishRepository dishRepository;
+    private final JpaRestaurantRepository restaurantRepository;
 
-    public DataJpaDishRepository(JpaDishRepository dishRepository) {
+    public DataJpaDishRepository(JpaDishRepository dishRepository, JpaRestaurantRepository restaurantRepository) {
         this.dishRepository = dishRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     @Override
-    public Dish save(Dish dish) {
+    public Dish save(Dish dish, int restaurantId) {
+        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
         return dishRepository.save(dish);
     }
 

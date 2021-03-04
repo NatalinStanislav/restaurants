@@ -3,7 +3,6 @@ package com.natalinstanislav.restaurants.repository.user;
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.JpaUtil;
-import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,11 +12,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.UserTestData.*;
+import static com.natalinstanislav.restaurants.VoteTestData.ALL_VOTES_FROM_USER3;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -45,13 +45,13 @@ public class DataJpaUserRepositoryTest {
 
     @Test
     void get() {
-        User user = repository.get(100005);
-        assertMatch(user, admin);
+        User user = repository.get(ADMIN_ID);
+        USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
     void getNotFound() throws Exception {
-        assertThrows(NotFoundException.class, () -> repository.get(NOT_FOUND));
+        Assertions.assertThat(repository.get(NOT_FOUND)).isNull();
     }
 
     @Test
@@ -63,12 +63,12 @@ public class DataJpaUserRepositoryTest {
     @Test
     void getByEmail() {
         User user = repository.getByEmail("admin@gmail.com");
-        assertMatch(user, admin);    }
+        USER_MATCHER.assertMatch(user, admin);    }
 
     @Test
     void getAll() {
         List<User> all = repository.getAll();
-        assertMatch(all, admin, user0, user1, user2, user3, user4);
+        USER_MATCHER.assertMatch(all, admin, user0, user1, user2, user3, user4);
     }
 
     @Test
@@ -77,27 +77,25 @@ public class DataJpaUserRepositoryTest {
         User created = repository.save(newUser);
         Integer newId = created.getId();
         newUser.setId(newId);
-        assertMatch(created, newUser);
-        assertMatch(repository.get(newId), newUser);
+        USER_MATCHER.assertMatch(created, newUser);
+        USER_MATCHER.assertMatch(repository.get(newId), newUser);
     }
 
     @Test
     void delete() throws Exception {
+        Assertions.assertThat(repository.get(ADMIN_ID)).isNotNull();
         repository.delete(ADMIN_ID);
-        assertThrows(NotFoundException.class, () -> repository.get(ADMIN_ID));
+        Assertions.assertThat(repository.get(ADMIN_ID)).isNull();
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertThrows(NotFoundException.class, () -> repository.delete(NOT_FOUND));
-    }
+        assertFalse(repository.delete(NOT_FOUND));    }
 
     @Test
-//    @Transactional
     void getWithVotes() throws Exception {
-        User admin0 = repository.get(ADMIN_ID);
-//        System.out.println(admin0.getVotes());
-        User admin = repository.getWithVotes(ADMIN_ID);
-        System.out.println(admin.getVotes());
+        User user3WithVotes = repository.getWithVotes(USER3_ID);
+        user3.setVotes(ALL_VOTES_FROM_USER3);
+        USER_WITH_VOTES_MATCHER.assertMatch(user3WithVotes, user3);
     }
 }

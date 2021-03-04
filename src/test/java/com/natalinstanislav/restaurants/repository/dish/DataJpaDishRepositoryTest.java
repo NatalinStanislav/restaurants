@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.DishTestData.*;
 import static com.natalinstanislav.restaurants.DishTestData.getNew;
+import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(locations = {
@@ -28,7 +30,7 @@ public class DataJpaDishRepositoryTest {
     @Test
     void save() {
         Dish newDish = getNew();
-        Dish created = repository.save(newDish);
+        Dish created = repository.save(newDish, PIZZA_HUT_ID);
         Integer newId = created.getId();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);

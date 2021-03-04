@@ -3,14 +3,21 @@ package com.natalinstanislav.restaurants;
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserTestData {
+    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(User.class, "registered", "votes");
+    public static TestMatcher<User> USER_WITH_VOTES_MATCHER =
+            TestMatcher.usingAssertions(User.class,
+                    (a, e) -> assertThat(a).usingRecursiveComparison()
+                            .ignoringFields("registered", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
+                    (a, e) -> assertThat(a).usingRecursiveComparison()
+                            .ignoringFields("registered", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
+
     public static final int NOT_FOUND = 123456;
     public static final int USER0_ID = START_SEQ;
     public static final int USER1_ID = START_SEQ + 1;
@@ -29,18 +36,6 @@ public class UserTestData {
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
-    }
-
-    public static void assertMatch(User actual, User expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("registered", "roles", "votes").isEqualTo(expected);
-    }
-
-    public static void assertMatch(Iterable<User> actual, User... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("registered", "roles", "votes").isEqualTo(expected);
     }
 
 }

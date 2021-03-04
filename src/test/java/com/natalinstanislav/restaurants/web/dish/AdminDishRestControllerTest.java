@@ -1,6 +1,5 @@
 package com.natalinstanislav.restaurants.web.dish;
 
-import com.natalinstanislav.restaurants.DishTestData;
 import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.repository.dish.DishRepository;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
@@ -26,8 +25,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void create() throws Exception {
-        Dish newDish = DishTestData.getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post("/admin/dishes")
+        Dish newDish = getNew();
+        ResultActions action = perform(MockMvcRequestBuilders.post("/admin/dishes?restaurantId=" + PIZZA_HUT_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isCreated());
@@ -85,8 +84,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        Dish updated = DishTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put("/admin/dishes/" + MEXICAN_PIZZA_ID)
+        Dish updated = getUpdated();
+        perform(MockMvcRequestBuilders.put("/admin/dishes/" + MEXICAN_PIZZA_ID + "?restaurantId=" + PIZZA_HUT_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());

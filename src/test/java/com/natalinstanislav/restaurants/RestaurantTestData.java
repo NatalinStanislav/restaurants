@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants;
 
 import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.model.Restaurant;
+import com.natalinstanislav.restaurants.to.RestaurantTo;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +18,8 @@ public class RestaurantTestData {
                             .ignoringFields("dishes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
                     (a, e) -> assertThat(a).usingRecursiveComparison()
                             .ignoringFields("dishes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
+    public static TestMatcher<RestaurantTo> RESTAURANT_TO_MATCHER = TestMatcher.usingEqualsAssertions(RestaurantTo.class);
+
 
     public static final int NOT_FOUND = 123456;
     public static final int PIZZA_HUT_ID = START_SEQ + 6;

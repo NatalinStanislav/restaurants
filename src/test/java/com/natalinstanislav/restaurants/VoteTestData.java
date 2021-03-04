@@ -12,6 +12,8 @@ import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SE
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VoteTestData {
+    public static TestMatcher<Vote> VOTE_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Vote.class, "restaurant", "user");
+
     public static final int NOT_FOUND = 123456;
     public static final int VOTE_USER0_30_OF_JANUARY_ID = START_SEQ + 21;
     public static final int VOTE_USER1_30_OF_JANUARY_ID = START_SEQ + 22;
@@ -41,21 +43,19 @@ public class VoteTestData {
     public static List<Vote> ALL_VOTES_FROM_30_OF_JANUARY = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30,
             VoteUser3January30, VoteUser4January30, VoteAdminJanuary30);
 
+    public static List<Vote> ALL_VOTES_FROM_30_OF_JANUARY_FOR_PIZZA_HUT = List.of(VoteUser0January30, VoteUser3January30, VoteUser4January30);
+
+    public static LocalDate LOCAL_DATE_30_OF_JANUARY = LocalDate.of(2020, 1, 30);
+
+    public static String ISO_30_OF_JANUARY = "2020-01-30";
+
+    public static String ISO_29_OF_JANUARY_TIME = "2020-01-29T10:20:30";
+
     public static Vote getNew() {
-        return new Vote(null, PizzaHut, LocalDate.of(2020, 1, 29), user4);
+        return new Vote(null, LocalDate.of(2020, 1, 29));
     }
 
-    public static void assertMatch(Vote actual, Vote expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("restaurant", "user").isEqualTo(expected);
-
+    public static Vote getUpdated() {
+        return new Vote(VOTE_USER3_30_OF_JANUARY_ID, SushiRoll, LocalDate.of(2020, 1, 29), user3);
     }
-
-    public static void assertMatch(Iterable<Vote> actual, Vote... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<Vote> actual, Iterable<Vote> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("restaurant", "user").isEqualTo(expected);
-    }
-
 }

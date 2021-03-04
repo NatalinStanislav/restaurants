@@ -1,6 +1,7 @@
 package com.natalinstanislav.restaurants.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 
@@ -46,8 +47,8 @@ public class User extends AbstractNamedEntity {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("date DESC")
-    @JsonIgnore
+    @OrderBy("date")
+    @JsonManagedReference
     private List<Vote> votes;
 
     public User() {

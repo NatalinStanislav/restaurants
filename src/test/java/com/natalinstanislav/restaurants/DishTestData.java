@@ -60,7 +60,7 @@ public class DishTestData {
     public static List<Dish> RANDOM_DISHES = List.of(KebabXXL, PhiladelphiaRoll, MexicanPizza);
 
     public static Dish getNew() {
-        return new Dish(null, "NewDish", 444, PizzaHut, LocalDate.of(2020, 1, 29));
+        return new Dish(null, "NewDish", 444, LocalDate.of(2020, 1, 29));
     }
 
     public static Dish getUpdated() {

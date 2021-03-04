@@ -2,6 +2,8 @@ package com.natalinstanislav.restaurants.web.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
 import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
+import com.natalinstanislav.restaurants.to.RestaurantTo;
+import com.natalinstanislav.restaurants.util.RestaurantUtil;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void getWithMenu() throws Exception {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
+
         perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenu?date=" + LOCALDATE_30_OF_JANUARY))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -69,6 +72,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
         SushiRoll.setDishes(ALL_DISHES_FROM_SUSHI_ROLL_30_OF_JANUARY);
         KebabHouse.setDishes(ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY);
+
         perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenu?date=" + ISO_30_OF_JANUARY))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -101,10 +105,30 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getWithMenuAndRating() {
+    void getWithMenuAndRating() throws Exception {
+        PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
+        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, 3);
+
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(pizzaHutTo));
     }
 
     @Test
-    void getAllWithMenuAndRating() {
+    void getAllWithMenuAndRating() throws Exception {
+        PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
+        SushiRoll.setDishes(ALL_DISHES_FROM_SUSHI_ROLL_30_OF_JANUARY);
+        KebabHouse.setDishes(ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY);
+        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, 3);
+        RestaurantTo sushiRollTo = RestaurantUtil.createTo(SushiRoll, 1);
+        RestaurantTo kebabHouseTo = RestaurantUtil.createTo(KebabHouse, 2);
+
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(pizzaHutTo, sushiRollTo, kebabHouseTo));
     }
 }

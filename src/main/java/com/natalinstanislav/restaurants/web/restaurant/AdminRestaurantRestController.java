@@ -7,7 +7,6 @@ import com.natalinstanislav.restaurants.to.RestaurantTo;
 import com.natalinstanislav.restaurants.util.RestaurantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,11 +27,13 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 public class AdminRestaurantRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final VoteRepository voteRepository;
 
-    @Autowired
-    private VoteRepository voteRepository;
+    public AdminRestaurantRestController(RestaurantRepository restaurantRepository, VoteRepository voteRepository) {
+        this.restaurantRepository = restaurantRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
@@ -90,7 +91,7 @@ public class AdminRestaurantRestController {
     public RestaurantTo getWithMenuAndRating(@PathVariable int id, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getWithMenuAndRating restaurant with id {} with menu from date {}", id, date);
         Restaurant restaurant = restaurantRepository.getWithMenu(id, date);
-        int rating = voteRepository.get(666).getId(); //bullshit!!!!!!!!!
+        int rating = voteRepository.getAllByDateForRestaurant(date, id).size();
         return RestaurantUtil.createTo(restaurant, rating);
     }
 
@@ -98,10 +99,7 @@ public class AdminRestaurantRestController {
     public List<RestaurantTo> getAllWithMenuAndRating(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAllWithMenuAndRating from date {}", date);
         List<Restaurant> restaurants = restaurantRepository.getAllWithMenu(date);
-        Map<Restaurant,Integer> restaurantRatingMap = null;
-//        restaurantRatingMap = voteRepository.getMap(date);
+        Map<Restaurant,Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteRepository.getAllByDate(date));
         return RestaurantUtil.getTos(restaurants, restaurantRatingMap);
     }
-
-
 }
