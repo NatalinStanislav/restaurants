@@ -5,7 +5,6 @@ import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
 import com.natalinstanislav.restaurants.util.TimeValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +13,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -91,7 +91,7 @@ public class AdminVoteRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Vote vote, @PathVariable int id, @RequestParam int restaurantId, @RequestParam int userId) {
+    public void update(@RequestBody @Valid Vote vote, @PathVariable int id, @RequestParam int restaurantId, @RequestParam int userId) {
         log.info("update {} with id={}", vote, id);
         Assert.notNull(vote, "vote must not be null");
         assureIdConsistent(vote, id);

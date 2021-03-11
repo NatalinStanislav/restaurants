@@ -19,6 +19,8 @@ import static com.natalinstanislav.restaurants.DishTestData.LOCALDATE_30_OF_JANU
 import static com.natalinstanislav.restaurants.DishTestData.ISO_30_OF_JANUARY;
 import static com.natalinstanislav.restaurants.RestaurantTestData.*;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
+import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
+import static com.natalinstanislav.restaurants.UserTestData.admin;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,7 +34,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -43,7 +46,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     void getWithMenu() throws Exception {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
 
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenu?date=" + LOCALDATE_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenu?date=" + LOCALDATE_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -52,7 +56,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete("/admin/restaurants/" + PIZZA_HUT_ID))
+        perform(MockMvcRequestBuilders.delete("/admin/restaurants/" + PIZZA_HUT_ID)
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertNull(restaurantRepository.get(PIZZA_HUT_ID));
@@ -60,7 +65,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/"))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/")
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -73,7 +79,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         SushiRoll.setDishes(ALL_DISHES_FROM_SUSHI_ROLL_30_OF_JANUARY);
         KebabHouse.setDishes(ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY);
 
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenu?date=" + ISO_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenu?date=" + ISO_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -84,6 +91,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     void create() throws Exception {
         Restaurant newRestaurant = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post("/admin/restaurants")
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
                 .andExpect(status().isCreated());
@@ -98,6 +106,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put("/admin/restaurants/" + PIZZA_HUT_ID)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -109,7 +118,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
         RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, 3);
 
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -125,7 +135,8 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         RestaurantTo sushiRollTo = RestaurantUtil.createTo(SushiRoll, 1);
         RestaurantTo kebabHouseTo = RestaurantUtil.createTo(KebabHouse, 2);
 
-        perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

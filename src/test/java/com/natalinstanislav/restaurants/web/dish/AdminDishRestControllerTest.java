@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static com.natalinstanislav.restaurants.DishTestData.*;
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
+import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
+import static com.natalinstanislav.restaurants.UserTestData.admin;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -28,6 +30,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
         Dish newDish = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post("/admin/dishes?restaurantId=" + PIZZA_HUT_ID)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
                 .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isCreated());
         Dish created = readFromJson(action, Dish.class);
@@ -39,7 +42,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete("/admin/dishes/" + MEXICAN_PIZZA_ID))
+        perform(MockMvcRequestBuilders.delete("/admin/dishes/" + MEXICAN_PIZZA_ID)
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertNull(dishRepository.get(MEXICAN_PIZZA_ID));
@@ -47,7 +51,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/dishes/" + MEXICAN_PIZZA_ID))
+        perform(MockMvcRequestBuilders.get("/admin/dishes/" + MEXICAN_PIZZA_ID)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -56,7 +61,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/dishes/"))
+        perform(MockMvcRequestBuilders.get("/admin/dishes/")
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -66,7 +72,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
     @Test
     void getAllFromRestaurantByDate() throws Exception {
         perform(MockMvcRequestBuilders.get("/admin/dishes/fromRestaurantByDate?restaurantId=" + PIZZA_HUT_ID +
-                "&date=" + ISO_30_OF_JANUARY))
+                "&date=" + ISO_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -75,7 +82,8 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllByDate() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/dishes/byDate?date=" + ISO_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/dishes/byDate?date=" + ISO_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -86,6 +94,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Dish updated = getUpdated();
         perform(MockMvcRequestBuilders.put("/admin/dishes/" + MEXICAN_PIZZA_ID + "?restaurantId=" + PIZZA_HUT_ID)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());

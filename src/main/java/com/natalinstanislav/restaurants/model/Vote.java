@@ -1,6 +1,7 @@
 package com.natalinstanislav.restaurants.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 public class Vote extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
+//    @NotNull
     @JsonBackReference
     private User user;
 
@@ -21,6 +22,7 @@ public class Vote extends AbstractBaseEntity {
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull
     private LocalDate date;
 

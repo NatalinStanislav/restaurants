@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +31,7 @@ public class AdminDishRestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> create(@RequestBody Dish dish, @RequestParam int restaurantId) {
+    public ResponseEntity<Dish> create(@RequestBody @Valid Dish dish, @RequestParam int restaurantId) {
         log.info("create {} for restaurant with id {}", dish, restaurantId);
         Assert.notNull(dish, "dish must not be null");
         checkNew(dish);
@@ -74,7 +75,7 @@ public class AdminDishRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Dish dish, @PathVariable int id, @RequestParam int restaurantId) {
+    public void update(@RequestBody @Valid Dish dish, @PathVariable int id, @RequestParam int restaurantId) {
         log.info("update dish {} with id={} for restaurant with id {}", dish, id, restaurantId);
         Assert.notNull(dish, "dish must not be null");
         assureIdConsistent(dish, id);

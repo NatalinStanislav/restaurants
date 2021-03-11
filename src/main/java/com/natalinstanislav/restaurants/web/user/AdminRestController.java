@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class AdminRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable int id) {
+    public void update(@RequestBody @Valid User user, @PathVariable int id) {
         log.info("update {} with id={}", user, id);
         Assert.notNull(user, "user must not be null");
         assureIdConsistent(user, id);
@@ -67,7 +68,7 @@ public class AdminRestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> create(@RequestBody User user) {
+    public ResponseEntity<User> create(@RequestBody @Valid User user) {
         log.info("create {}", user);
         Assert.notNull(user, "user must not be null");
         checkNew(user);
@@ -76,5 +77,15 @@ public class AdminRestController {
                 .path("/admin/users" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        User user = get(id);
+        if(user!=null) {
+            user.setEnabled(enabled);
+        }
     }
 }

@@ -13,7 +13,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
 import static com.natalinstanislav.restaurants.RestaurantTestData.SUSHI_ROLL_ID;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
+import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
 import static com.natalinstanislav.restaurants.UserTestData.USER3_ID;
+import static com.natalinstanislav.restaurants.UserTestData.admin;
 import static com.natalinstanislav.restaurants.VoteTestData.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,7 +29,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID))
+        perform(MockMvcRequestBuilders.get("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -36,7 +39,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID))
+        perform(MockMvcRequestBuilders.delete("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID)
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertNull(voteRepository.get(VOTE_USER3_30_OF_JANUARY_ID));
@@ -44,7 +48,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/votes/"))
+        perform(MockMvcRequestBuilders.get("/admin/votes/")
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -53,7 +58,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllFromUser() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/votes/fromUser?userId=" + USER3_ID))
+        perform(MockMvcRequestBuilders.get("/admin/votes/fromUser?userId=" + USER3_ID)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -62,7 +68,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllByDate() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/votes/byDate?date=" + ISO_30_OF_JANUARY))
+        perform(MockMvcRequestBuilders.get("/admin/votes/byDate?date=" + ISO_30_OF_JANUARY)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -71,7 +78,8 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAllByDateForRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get("/admin/votes/byDateForRestaurant?date=" + ISO_30_OF_JANUARY + "&restaurantId=" + PIZZA_HUT_ID))
+        perform(MockMvcRequestBuilders.get("/admin/votes/byDateForRestaurant?date=" + ISO_30_OF_JANUARY + "&restaurantId=" + PIZZA_HUT_ID)
+                .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -83,6 +91,7 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
         Vote newVote = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post("/admin/votes?dateTime=" + ISO_29_OF_JANUARY_TIME +
                 "&restaurantId=" + PIZZA_HUT_ID + "&userId=" + USER3_ID)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVote)))
                 .andExpect(status().isCreated());
@@ -97,6 +106,7 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Vote updated = getUpdated();
         perform(MockMvcRequestBuilders.put("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID + "?restaurantId=" + SUSHI_ROLL_ID + "&userId=" + USER3_ID)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());

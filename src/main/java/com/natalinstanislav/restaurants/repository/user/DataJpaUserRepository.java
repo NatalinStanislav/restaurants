@@ -1,15 +1,22 @@
 package com.natalinstanislav.restaurants.repository.user;
 
+import com.natalinstanislav.restaurants.AuthorizedUser;
 import com.natalinstanislav.restaurants.model.User;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class DataJpaUserRepository implements UserRepository {
+@Repository("userRepository")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+
+public class DataJpaUserRepository implements UserRepository, UserDetailsService {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final JpaUserRepository userRepository;
@@ -49,5 +56,14 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     public User getWithVotes(int id) {
         return userRepository.getWithVotes(id);
+    }
+
+    @Override
+    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.getByEmail(email.toLowerCase());
+        if (user == null) {
+            throw new UsernameNotFoundException("User " + email + " is not found");
+        }
+        return new AuthorizedUser(user);
     }
 }
