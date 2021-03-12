@@ -22,11 +22,11 @@ public class UserUtil {
 //        user.setPassword(userTo.getPassword());
 //        return user;
 //    }
-//
-//    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
-//        String password = user.getPassword();
-//        user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password) : password);
-//        user.setEmail(user.getEmail().toLowerCase());
-//        return user;
-//    }
+
+    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
+        String password = user.getPassword();
+        user.setPassword(StringUtils.hasText(password) ? passwordEncoder.encode(password) : password);
+        user.setEmail(user.getEmail().toLowerCase());
+        return user;
+    }
 }

@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
+import com.natalinstanislav.restaurants.web.json.JsonUtil;
 
 import java.util.Collections;
 import java.util.Date;
@@ -11,13 +12,13 @@ import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SE
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserTestData {
-    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(User.class, "registered", "votes");
+    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(User.class, "registered", "votes", "password");
     public static TestMatcher<User> USER_WITH_VOTES_MATCHER =
             TestMatcher.usingAssertions(User.class,
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
+                            .ignoringFields("registered", "password", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
+                            .ignoringFields("registered", "password", "votes.user", "votes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
 
     public static final int NOT_FOUND = 123456;
     public static final int USER0_ID = START_SEQ;
@@ -44,5 +45,9 @@ public class UserTestData {
         User updated = new User(user3);
         updated.setName("UpdatedName");
         return updated;
+    }
+
+    public static String jsonWithPassword(User user, String passw) {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 }

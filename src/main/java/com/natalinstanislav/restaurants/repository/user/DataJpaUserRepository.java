@@ -9,9 +9,12 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.natalinstanislav.restaurants.util.UserUtil.prepareToSave;
 
 @Repository("userRepository")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -20,9 +23,11 @@ public class DataJpaUserRepository implements UserRepository, UserDetailsService
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final JpaUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataJpaUserRepository(JpaUserRepository userRepository) {
+    public DataJpaUserRepository(JpaUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class DataJpaUserRepository implements UserRepository, UserDetailsService
     @Override
     @CacheEvict(value = "users", allEntries = true)
     public User save(User user) {
-        return userRepository.save(user);
+        return userRepository.save(prepareToSave(user, passwordEncoder));
     }
 
     @Override
