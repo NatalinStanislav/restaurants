@@ -43,6 +43,14 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
     void getWithMenu() throws Exception {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
 
