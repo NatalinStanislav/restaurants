@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Repository
 public class DataJpaRestaurantRepository implements RestaurantRepository {
     private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");

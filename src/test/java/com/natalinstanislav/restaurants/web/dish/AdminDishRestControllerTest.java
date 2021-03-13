@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants.web.dish;
 
 import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.repository.dish.DishRepository;
+import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -10,15 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
+
 import static com.natalinstanislav.restaurants.DishTestData.*;
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
 import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
 import static com.natalinstanislav.restaurants.UserTestData.admin;
+import static com.natalinstanislav.restaurants.UserTestData.user1;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 class AdminDishRestControllerTest extends AbstractControllerTest {
 
@@ -50,6 +54,13 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete("/admin/dishes/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get("/admin/dishes/" + MEXICAN_PIZZA_ID)
                 .with(userHttpBasic(admin)))
@@ -57,6 +68,27 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(MexicanPizza));
+    }
+
+    @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/dishes/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/dishes/" + MEXICAN_PIZZA_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/dishes/" + MEXICAN_PIZZA_ID)
+                .with(userHttpBasic(user1)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -100,5 +132,29 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         DISH_MATCHER.assertMatch(dishRepository.get(MEXICAN_PIZZA_ID), updated);
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        Dish invalid = new Dish(null, "", -1, LocalDate.of(2020, 1, 29));
+        perform(MockMvcRequestBuilders.post("/admin/dishes?restaurantId=" + PIZZA_HUT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        Dish invalid = new Dish(null, "", -1, LocalDate.of(2020, 1, 29));
+        perform(MockMvcRequestBuilders.put("/admin/dishes/" + MEXICAN_PIZZA_ID + "?restaurantId=" + PIZZA_HUT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
     }
 }

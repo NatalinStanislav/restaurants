@@ -3,13 +3,11 @@ package com.natalinstanislav.restaurants;
 import com.natalinstanislav.restaurants.model.Vote;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.*;
 import static com.natalinstanislav.restaurants.UserTestData.*;
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class VoteTestData {
     public static TestMatcher<Vote> VOTE_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Vote.class, "restaurant", "user");

@@ -1,6 +1,5 @@
 package com.natalinstanislav.restaurants;
 
-
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.to.UserTo;
 import com.natalinstanislav.restaurants.util.UserUtil;

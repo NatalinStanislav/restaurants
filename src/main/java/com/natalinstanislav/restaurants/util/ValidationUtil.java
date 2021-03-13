@@ -1,6 +1,5 @@
 package com.natalinstanislav.restaurants.util;
 
-
 import com.natalinstanislav.restaurants.model.AbstractBaseEntity;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 

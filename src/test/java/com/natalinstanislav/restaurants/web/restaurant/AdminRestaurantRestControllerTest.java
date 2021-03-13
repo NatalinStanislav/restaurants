@@ -4,6 +4,7 @@ import com.natalinstanislav.restaurants.model.Restaurant;
 import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
 import com.natalinstanislav.restaurants.to.RestaurantTo;
 import com.natalinstanislav.restaurants.util.RestaurantUtil;
+import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,10 @@ import static com.natalinstanislav.restaurants.RestaurantTestData.*;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
 import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
 import static com.natalinstanislav.restaurants.UserTestData.admin;
+import static com.natalinstanislav.restaurants.UserTestData.user0;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
@@ -51,6 +51,19 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID)
+                .with(userHttpBasic(user0)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void getWithMenu() throws Exception {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
 
@@ -69,6 +82,13 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertNull(restaurantRepository.get(PIZZA_HUT_ID));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete("/admin/restaurants/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -149,5 +169,29 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_TO_MATCHER.contentJson(pizzaHutTo, sushiRollTo, kebabHouseTo));
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        Restaurant invalid = new Restaurant(null, "");
+        perform(MockMvcRequestBuilders.post("/admin/restaurants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        Restaurant invalid = new Restaurant(null, "");
+        perform(MockMvcRequestBuilders.put("/admin/restaurants/" + PIZZA_HUT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid))
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
     }
 }

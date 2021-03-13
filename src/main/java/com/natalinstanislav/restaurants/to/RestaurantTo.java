@@ -20,7 +20,7 @@ public class RestaurantTo {
     public RestaurantTo(Integer id, String name, List<Dish> dishes, Integer rating) {
         this.id = id;
         this.name = name;
-        this. dishes = dishes;
+        this.dishes = dishes;
         this.rating = rating;
     }
 

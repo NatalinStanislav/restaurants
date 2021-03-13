@@ -7,12 +7,13 @@ import com.natalinstanislav.restaurants.to.RestaurantTo;
 import java.util.*;
 
 public class RestaurantUtil {
+
     private RestaurantUtil() {
     }
 
-    public static List<RestaurantTo> getTos(Collection<Restaurant> restaurants, Map<Restaurant,Integer> restaurantRatingMap) {
+    public static List<RestaurantTo> getTos(Collection<Restaurant> restaurants, Map<Restaurant, Integer> restaurantRatingMap) {
         List<RestaurantTo> list = new ArrayList<>(restaurants.size());
-        for(Restaurant r: restaurants) {
+        for (Restaurant r : restaurants) {
             list.add(new RestaurantTo(r.getId(), r.getName(), r.getDishes(), restaurantRatingMap.get(r)));
         }
         return list;
@@ -22,11 +23,11 @@ public class RestaurantUtil {
         return new RestaurantTo(restaurant.getId(), restaurant.getName(), restaurant.getDishes(), rating);
     }
 
-    public static Map<Restaurant,Integer> getRestaurantRatingMap(List<Vote> votes) {
+    public static Map<Restaurant, Integer> getRestaurantRatingMap(List<Vote> votes) {
         Map<Restaurant, Integer> restaurantRatingMap = new HashMap<>();
-        for(Vote vote: votes) {
-            if(restaurantRatingMap.containsKey(vote.getRestaurant())) {
-                restaurantRatingMap.put(vote.getRestaurant(), restaurantRatingMap.get(vote.getRestaurant())+1);
+        for (Vote vote : votes) {
+            if (restaurantRatingMap.containsKey(vote.getRestaurant())) {
+                restaurantRatingMap.put(vote.getRestaurant(), restaurantRatingMap.get(vote.getRestaurant()) + 1);
             } else {
                 restaurantRatingMap.put(vote.getRestaurant(), 1);
             }

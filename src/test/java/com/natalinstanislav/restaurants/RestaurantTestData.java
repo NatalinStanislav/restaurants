@@ -1,10 +1,8 @@
 package com.natalinstanislav.restaurants;
 
-import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.model.Restaurant;
 import com.natalinstanislav.restaurants.to.RestaurantTo;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.model.AbstractBaseEntity.START_SEQ;
@@ -20,7 +18,6 @@ public class RestaurantTestData {
                             .ignoringFields("dishes.restaurant").ignoringAllOverriddenEquals().isEqualTo(e));
     public static TestMatcher<RestaurantTo> RESTAURANT_TO_MATCHER = TestMatcher.usingEqualsAssertions(RestaurantTo.class);
 
-
     public static final int NOT_FOUND = 123456;
     public static final int PIZZA_HUT_ID = START_SEQ + 6;
     public static final int SUSHI_ROLL_ID = START_SEQ + 7;
@@ -32,7 +29,6 @@ public class RestaurantTestData {
 
     public static List<Restaurant> ALL_RESTAURANTS = List.of(KebabHouse, PizzaHut, SushiRoll);
 
-
     public static Restaurant getNew() {
         return new Restaurant(null, "NewRestaurant");
     }
@@ -40,6 +36,4 @@ public class RestaurantTestData {
     public static Restaurant getUpdated() {
         return new Restaurant(PIZZA_HUT_ID, "NEW Pizza Hut");
     }
-
-
 }

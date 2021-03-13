@@ -1,12 +1,8 @@
 package com.natalinstanislav.restaurants.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)

@@ -9,12 +9,11 @@ import java.time.LocalTime;
 public class TimeValidationUtil {
 
     private TimeValidationUtil() {
-
     }
 
     public static LocalDate checkVoteTime(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
-        if(time.isAfter(LocalTime.of(11, 0))) {
+        if (time.isAfter(LocalTime.of(11, 0))) {
             throw new TimeValidationException("Can't vote after 11:00");
         }
         return dateTime.toLocalDate();
