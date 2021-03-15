@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,60 +20,47 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
-
-    protected UserRepository userRepository;
+public class AdminRestController extends AbstractUserController {
 
     public AdminRestController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        super(userRepository);
     }
 
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
-        log.info("get user with id {}", id);
-        return checkNotFoundWithId(userRepository.get(id), id);
+        return super.get(id);
     }
 
     @GetMapping("/byEmail")
     public User getByMail(@RequestParam String email) {
-        return userRepository.getByEmail(email);
+        return super.getByMail(email);
     }
 
     @GetMapping("/{id}/withVotes")
     public User getWithVotes(@PathVariable int id) {
-        log.info("getWithVotes user with id {}", id);
-        return checkNotFoundWithId(userRepository.getWithVotes(id), id);
+        return super.getWithVotes(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        log.info("delete user with id {}", id);
-        checkNotFoundWithId(userRepository.delete(id), id);
+        super.delete(id);
     }
 
     @GetMapping
     public List<User> getAll() {
-        log.info("getAll");
-        return userRepository.getAll();
+        return super.getAll();
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid User user, @PathVariable int id) {
-        log.info("update {} with id={}", user, id);
-        Assert.notNull(user, "user must not be null");
-        assureIdConsistent(user, id);
-        checkNotFoundWithId(userRepository.save(user), id);
+        super.update(user, id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> create(@RequestBody @Valid User user) {
-        log.info("create {}", user);
-        Assert.notNull(user, "user must not be null");
-        checkNew(user);
-        User created = userRepository.save(user);
+    public ResponseEntity<User> createWithLocation(@RequestBody @Valid User user) {
+        User created = super.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/admin/users" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -82,10 +70,6 @@ public class AdminRestController {
     @PatchMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        log.info(enabled ? "enable {}" : "disable {}", id);
-        User user = get(id);
-        if(user!=null) {
-            user.setEnabled(enabled);
-        }
+        super.enable(id, enabled);
     }
 }

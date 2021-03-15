@@ -1,14 +1,17 @@
 package com.natalinstanislav.restaurants.web.user;
 
+import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
-import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
 import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
@@ -16,8 +19,7 @@ import static com.natalinstanislav.restaurants.UserTestData.*;
 import static com.natalinstanislav.restaurants.VoteTestData.ALL_VOTES_FROM_USER3;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -32,6 +34,27 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(admin));
+    }
+
+    @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/users/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/users/"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/users/")
+                .with(userHttpBasic(user0)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -64,6 +87,14 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete("/admin/users/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get("/admin/users/")
                 .with(userHttpBasic(admin)))
@@ -79,13 +110,13 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.put("/admin/users/" + USER3_ID)
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(updated, "newPass")))
+                .content(jsonWithPassword(updated, "password3")))
                 .andExpect(status().isNoContent());
         USER_MATCHER.assertMatch(userRepository.get(USER3_ID), updated);
     }
 
     @Test
-    void create() throws Exception {
+    void createWithLocation() throws Exception {
         User newUser = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post("/admin/users")
                 .with(userHttpBasic(admin))
@@ -111,4 +142,55 @@ class AdminRestControllerTest extends AbstractControllerTest {
         assertFalse(userRepository.get(USER3_ID).isEnabled());
     }
 
+    @Test
+    void createInvalid() throws Exception {
+        User invalid = new User(null, null, "", "newPass", Role.USER, Role.ADMIN);
+        perform(MockMvcRequestBuilders.post("/admin/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(invalid, "newPass")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        User invalid = new User(user3);
+        invalid.setName("");
+        perform(MockMvcRequestBuilders.put("/admin/users/" + USER3_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(invalid, "password3")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateDuplicate() throws Exception {
+        User updated = new User(user3);
+        updated.setEmail("admin@gmail.com");
+        perform(MockMvcRequestBuilders.put("/admin/users/" + USER3_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, "password3")))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.type").value(ErrorType.DATA_ERROR.name()));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createDuplicate() throws Exception {
+        User expected = new User(null, "New", "user0@yandex.ru", "newPass", Role.USER, Role.ADMIN);
+        perform(MockMvcRequestBuilders.post("/admin/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(expected, "newPass")))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.type").value(ErrorType.DATA_ERROR.name()));
+    }
 }
