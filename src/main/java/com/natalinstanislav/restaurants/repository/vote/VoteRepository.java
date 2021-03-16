@@ -17,6 +17,10 @@ public interface VoteRepository extends Repository<Vote> {
 
     List<Vote> getAllByDateForRestaurant(LocalDate date, int restaurantId);
 
+    Vote get(int id, int userId);
+
+    boolean delete(int id, int userId);
+
     default Vote save(Vote vote) {
         throw new UnsupportedOperationException();
     }

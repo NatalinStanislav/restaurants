@@ -13,9 +13,9 @@ import java.util.List;
 import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 
 public abstract class AbstractUserController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public AbstractUserController(UserRepository userRepository) {
         this.userRepository = userRepository;

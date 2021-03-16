@@ -64,4 +64,16 @@ public class DataJpaVoteRepository implements VoteRepository {
     public List<Vote> getAllByDateForRestaurant(LocalDate date, int restaurantId) {
         return voteRepository.getAllByDateForRestaurant(date, restaurantId);
     }
+
+    @Override
+    public Vote get(int id, int userId) {
+        return voteRepository.findById(id)
+                .filter(vote -> vote.getUser().getId() == userId)
+                .orElse(null);
+    }
+
+    @Override
+    public boolean delete(int id, int userId) {
+        return voteRepository.delete(id, userId) != 0;
+    }
 }

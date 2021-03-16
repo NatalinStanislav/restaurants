@@ -4,6 +4,7 @@ import com.natalinstanislav.restaurants.util.ValidationUtil;
 import com.natalinstanislav.restaurants.util.exception.ErrorInfo;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
+import com.natalinstanislav.restaurants.util.exception.TimeValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -52,7 +53,7 @@ public class ExceptionInfoHandler {
 
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)  // 422
-    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class, TimeValidationException.class})
     public ErrorInfo illegalRequestDataError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }

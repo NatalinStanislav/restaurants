@@ -53,6 +53,10 @@ public class VoteTestData {
         return new Vote(null, LocalDate.of(2020, 1, 29));
     }
 
+    public static Vote getNewNow() {
+        return new Vote(null, LocalDate.now());
+    }
+
     public static Vote getUpdated() {
         return new Vote(VOTE_USER3_30_OF_JANUARY_ID, SushiRoll, LocalDate.of(2020, 1, 29), user3);
     }

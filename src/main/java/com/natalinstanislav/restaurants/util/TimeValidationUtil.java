@@ -18,4 +18,11 @@ public class TimeValidationUtil {
         }
         return dateTime.toLocalDate();
     }
+
+    public static void checkVoteDate(LocalDateTime dateTime) {
+        LocalDate date = dateTime.toLocalDate();
+        if (!date.isEqual(LocalDate.now())) {
+            throw new TimeValidationException("Can't vote another date");
+        }
+    }
 }

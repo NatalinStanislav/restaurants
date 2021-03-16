@@ -12,7 +12,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
+import static com.natalinstanislav.restaurants.UserTestData.ADMIN_ID;
 import static com.natalinstanislav.restaurants.UserTestData.USER3_ID;
+import static com.natalinstanislav.restaurants.UserTestData.USER0_ID;
 import static com.natalinstanislav.restaurants.VoteTestData.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -93,5 +95,32 @@ public class DataJpaVoteRepositoryTest {
     void getAllByDateForRestaurant() {
         List<Vote> allFrom30OfJanuaryForPizzaHut = repository.getAllByDateForRestaurant(LocalDate.of(2020, 1, 30), PIZZA_HUT_ID);
         VOTE_MATCHER.assertMatch(allFrom30OfJanuaryForPizzaHut, ALL_VOTES_FROM_30_OF_JANUARY_FOR_PIZZA_HUT);
+    }
+
+    @Test
+    void getFromUser() {
+        Vote vote = repository.get(VOTE_ADMIN_30_OF_JANUARY_ID, ADMIN_ID);
+        VOTE_MATCHER.assertMatch(vote, VoteAdminJanuary30);
+    }
+
+    @Test
+    void getNotOwn() {
+        Vote vote = repository.get(VOTE_ADMIN_30_OF_JANUARY_ID, USER3_ID);
+        Assertions.assertThat(vote).isNull();
+    }
+
+    @Test
+    void deleteFromUser() {
+        Assertions.assertThat(repository.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
+        repository.delete(VOTE_USER0_30_OF_JANUARY_ID, USER0_ID);
+        Assertions.assertThat(repository.get(VOTE_USER0_30_OF_JANUARY_ID)).isNull();
+    }
+
+
+    @Test
+    void deleteFromUserNotOwn() {
+        Assertions.assertThat(repository.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
+        repository.delete(VOTE_USER0_30_OF_JANUARY_ID, USER3_ID);
+        Assertions.assertThat(repository.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
     }
 }

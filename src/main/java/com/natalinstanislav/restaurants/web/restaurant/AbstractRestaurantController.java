@@ -20,11 +20,11 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 public abstract class AbstractRestaurantController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    protected final VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
     public AbstractRestaurantController(RestaurantRepository restaurantRepository, VoteRepository voteRepository) {
         this.restaurantRepository = restaurantRepository;
