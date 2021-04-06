@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public class DataJpaDishRepository implements DishRepository {
-    private static final Sort SORT_RESTAURANT_DATE = Sort.by(Sort.Direction.ASC, "date", "restaurant", "id");
+    private static final Sort SORT_RESTAURANT_DATE = Sort.by(Sort.Direction.ASC, "dishDate", "restaurant", "id");
 
     private final JpaDishRepository dishRepository;
     private final JpaRestaurantRepository restaurantRepository;

@@ -17,9 +17,9 @@ public interface JpaDishRepository extends JpaRepository<Dish, Integer> {
     @Query("DELETE FROM Dish d WHERE d.id=:id")
     int delete(@Param("id") int id);
 
-    @Query("SELECT d FROM Dish d WHERE d.date=?1")
+    @Query("SELECT d FROM Dish d WHERE d.dishDate=?1")
     List<Dish> getAllByDate(LocalDate date);
 
-    @Query("SELECT d FROM Dish d WHERE d.date=?2 AND d.restaurant.id = ?1")
+    @Query("SELECT d FROM Dish d WHERE d.dishDate=?2 AND d.restaurant.id = ?1")
     List<Dish> getAllFromRestaurantByDate(int restaurantId, LocalDate date);
 }

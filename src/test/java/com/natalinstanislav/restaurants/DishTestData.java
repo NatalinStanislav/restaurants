@@ -62,6 +62,6 @@ public class DishTestData {
     }
 
     public static Dish getUpdated() {
-        return new Dish(MEXICAN_PIZZA_ID, MexicanPizza.getName(), 555, MexicanPizza.getRestaurant(), MexicanPizza.getDate());
+        return new Dish(MEXICAN_PIZZA_ID, MexicanPizza.getName(), 555, MexicanPizza.getRestaurant(), MexicanPizza.getDishDate());
     }
 }

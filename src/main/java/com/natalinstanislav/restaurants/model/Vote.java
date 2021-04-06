@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "votes_unique_user_date_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "votes_unique_user_date_idx")})
 public class Vote extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -21,27 +21,27 @@ public class Vote extends AbstractBaseEntity {
     @NotNull
     private Restaurant restaurant;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "vote_date", nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull
-    private LocalDate date;
+    private LocalDate voteDate;
 
     public Vote() {
     }
 
-    public Vote(Integer id, LocalDate date) {
+    public Vote(Integer id, LocalDate voteDate) {
         super(id);
-        this.date = date;
+        this.voteDate = voteDate;
     }
 
-    public Vote(Restaurant restaurant, LocalDate date, User user) {
-        this(null, restaurant, date, user);
+    public Vote(Restaurant restaurant, LocalDate voteDate, User user) {
+        this(null, restaurant, voteDate, user);
     }
 
-    public Vote(Integer id, Restaurant restaurant, LocalDate date, User user) {
+    public Vote(Integer id, Restaurant restaurant, LocalDate voteDate, User user) {
         super(id);
         this.restaurant = restaurant;
-        this.date = date;
+        this.voteDate = voteDate;
         this.user = user;
     }
 
@@ -54,7 +54,7 @@ public class Vote extends AbstractBaseEntity {
     }
 
     public LocalDate getDateTime() {
-        return date;
+        return voteDate;
     }
 
     public void setUser(User user) {
@@ -66,14 +66,14 @@ public class Vote extends AbstractBaseEntity {
     }
 
     public void setDateTime(LocalDate date) {
-        this.date = date;
+        this.voteDate = date;
     }
 
     @Override
     public String toString() {
         return "Vote{" +
                 "restaurant=" + restaurant +
-                ", date=" + date +
+                ", date=" + voteDate +
                 ", id=" + id +
                 '}';
     }

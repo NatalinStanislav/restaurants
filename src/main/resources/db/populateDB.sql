@@ -28,7 +28,7 @@ VALUES ('Pizza Hut'),
        ('Sushi Roll'),
        ('Kebab House');
 
-INSERT INTO dishes (name, cost, date, restaurant_id)
+INSERT INTO dishes (name, cost, dish_date, restaurant_id)
 VALUES ('Mexican pizza', 999, '2020-01-30', 100006),
        ('Italian salad', 349, '2020-01-30', 100006),
        ('Cappuccino', 199, '2020-01-30', 100006),
@@ -43,7 +43,7 @@ VALUES ('Mexican pizza', 999, '2020-01-30', 100006),
        ('Tea', 99, '2020-01-31', 100006);
 
 
-INSERT INTO votes (date, user_id, restaurant_id)
+INSERT INTO votes (vote_date, user_id, restaurant_id)
 VALUES ('2020-01-30', 100000, 100006),
        ('2020-01-30', 100001, 100008),
        ('2020-01-30', 100002, 100008),

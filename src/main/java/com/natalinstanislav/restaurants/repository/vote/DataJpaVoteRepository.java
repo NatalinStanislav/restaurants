@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public class DataJpaVoteRepository implements VoteRepository {
-    private static final Sort SORT_DATETIME = Sort.by(Sort.Direction.ASC, "date", "id");
+    private static final Sort SORT_DATETIME = Sort.by(Sort.Direction.ASC, "voteDate", "id");
 
     private final JpaVoteRepository voteRepository;
     private final JpaRestaurantRepository restaurantRepository;

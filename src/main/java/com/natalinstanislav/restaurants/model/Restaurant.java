@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "restaurants")
 public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-    @OrderBy("date DESC")
+    @OrderBy("dishDate DESC")
     @JsonManagedReference
     private List<Dish> dishes;
 

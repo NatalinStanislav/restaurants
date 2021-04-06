@@ -49,7 +49,7 @@ public class User extends AbstractNamedEntity {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("date")
+    @OrderBy("voteDate")
     @JsonManagedReference
     private List<Vote> votes;
 

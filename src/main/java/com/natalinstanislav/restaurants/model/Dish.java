@@ -22,25 +22,25 @@ public class Dish extends AbstractNamedEntity {
     @JsonBackReference
     private Restaurant restaurant;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "dish_date", nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull
-    private LocalDate date;
+    private LocalDate dishDate;
 
     public Dish() {
     }
 
-    public Dish(Integer id, String name, Integer cost, LocalDate date) {
+    public Dish(Integer id, String name, Integer cost, LocalDate dishDate) {
         super(id, name);
         this.cost = cost;
-        this.date = date;
+        this.dishDate = dishDate;
     }
 
-    public Dish(Integer id, String name, Integer cost, Restaurant restaurant, LocalDate date) {
+    public Dish(Integer id, String name, Integer cost, Restaurant restaurant, LocalDate dishDate) {
         super(id, name);
         this.cost = cost;
         this.restaurant = restaurant;
-        this.date = date;
+        this.dishDate = dishDate;
     }
 
     public Integer getCost() {
@@ -59,19 +59,19 @@ public class Dish extends AbstractNamedEntity {
         this.restaurant = restaurant;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDishDate() {
+        return dishDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDishDate(LocalDate date) {
+        this.dishDate = date;
     }
 
     @Override
     public String toString() {
         return "Dish{" +
                 "cost=" + cost +
-                ", date=" + date +
+                ", date=" + dishDate +
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
