@@ -15,7 +15,7 @@
     <beans:bean class="org.springframework.security.crypto.factory.PasswordEncoderFactories" id="passwordEncoder" factory-method="createDelegatingPasswordEncoder"/>
 
     <authentication-manager>
-        <authentication-provider user-service-ref="userRepository">
+        <authentication-provider user-service-ref="userService">
             <password-encoder ref="passwordEncoder"/>
         </authentication-provider>
     </authentication-manager>

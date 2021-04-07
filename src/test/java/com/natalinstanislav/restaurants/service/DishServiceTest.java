@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository.dish;
+package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Dish;
 import org.assertj.core.api.Assertions;
@@ -20,59 +20,59 @@ import static org.junit.jupiter.api.Assertions.*;
         "classpath:spring/spring-db.xml"
 })
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class DataJpaDishRepositoryTest {
+public class DishServiceTest {
 
     @Autowired
-    protected DishRepository repository;
+    protected DishService service;
 
     @Test
     void save() {
         Dish newDish = getNew();
-        Dish created = repository.save(newDish, PIZZA_HUT_ID);
+        Dish created = service.save(newDish, PIZZA_HUT_ID);
         Integer newId = created.getId();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
-        DISH_MATCHER.assertMatch(repository.get(newId), newDish);
+        DISH_MATCHER.assertMatch(service.get(newId), newDish);
     }
 
     @Test
     void delete() {
-        Assertions.assertThat(repository.get(FISH_SALAD_ID)).isNotNull();
-        repository.delete(FISH_SALAD_ID);
-        Assertions.assertThat(repository.get(FISH_SALAD_ID)).isNull();
+        Assertions.assertThat(service.get(FISH_SALAD_ID)).isNotNull();
+        service.delete(FISH_SALAD_ID);
+        Assertions.assertThat(service.get(FISH_SALAD_ID)).isNull();
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(repository.delete(NOT_FOUND));
+        assertFalse(service.delete(NOT_FOUND));
     }
 
     @Test
     void get() {
-        Dish dish = repository.get(MEXICAN_PIZZA_ID);
+        Dish dish = service.get(MEXICAN_PIZZA_ID);
         DISH_MATCHER.assertMatch(dish, MexicanPizza);
     }
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(repository.get(NOT_FOUND)).isNull();
+        Assertions.assertThat(service.get(NOT_FOUND)).isNull();
     }
 
     @Test
     void getAll() {
-        List<Dish> all = repository.getAll();
+        List<Dish> all = service.getAll();
         DISH_MATCHER.assertMatch(all, ALL_DISHES);
     }
 
     @Test
     void getAllFromRestaurantByDate() {
-        List<Dish> allFrom30_OfJanuaryFromPizzaHut = repository.getAllFromRestaurantByDate(100006, LOCALDATE_30_OF_JANUARY);
+        List<Dish> allFrom30_OfJanuaryFromPizzaHut = service.getAllFromRestaurantByDate(100006, LOCALDATE_30_OF_JANUARY);
         DISH_MATCHER.assertMatch(allFrom30_OfJanuaryFromPizzaHut, ALL_DISHES_FROM_30_OF_JANUARY_FROM_PIZZA_HUT);
     }
 
     @Test
     void getAllByDate() {
-        List<Dish> allFrom30_OfJanuary = repository.getAllByDate(LOCALDATE_30_OF_JANUARY);
+        List<Dish> allFrom30_OfJanuary = service.getAllByDate(LOCALDATE_30_OF_JANUARY);
         DISH_MATCHER.assertMatch(allFrom30_OfJanuary, ALL_DISHES_FROM_30_OF_JANUARY);
     }
 }

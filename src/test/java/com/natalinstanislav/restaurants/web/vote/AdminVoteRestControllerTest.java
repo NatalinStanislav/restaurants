@@ -2,7 +2,7 @@ package com.natalinstanislav.restaurants.web.vote;
 
 import com.natalinstanislav.restaurants.VoteTestData;
 import com.natalinstanislav.restaurants.model.Vote;
-import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
+import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminVoteRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private VoteRepository voteRepository;
+    private VoteService voteService;
 
     @Test
     void get() throws Exception {
@@ -65,7 +65,7 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(voteRepository.get(VOTE_USER3_30_OF_JANUARY_ID));
+        assertNull(voteService.get(VOTE_USER3_30_OF_JANUARY_ID));
     }
 
     @Test
@@ -127,7 +127,7 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newVote.setId(newId);
         VOTE_MATCHER.assertMatch(created, newVote);
-        VOTE_MATCHER.assertMatch(voteRepository.get(newId), newVote);
+        VOTE_MATCHER.assertMatch(voteService.get(newId), newVote);
     }
 
     @Test
@@ -138,7 +138,7 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
-        VOTE_MATCHER.assertMatch(voteRepository.get(VOTE_USER3_30_OF_JANUARY_ID), updated);
+        VOTE_MATCHER.assertMatch(voteService.get(VOTE_USER3_30_OF_JANUARY_ID), updated);
     }
 
     @Test

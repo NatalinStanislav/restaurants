@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository.vote;
+package com.natalinstanislav.restaurants.repository;
 
 import com.natalinstanislav.restaurants.model.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;

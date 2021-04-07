@@ -2,7 +2,7 @@ package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.service.UserService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Test
     void get() throws Exception {
@@ -83,7 +83,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(userRepository.get(USER3_ID));
+        assertNull(userService.get(USER3_ID));
     }
 
     @Test
@@ -112,7 +112,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonWithPassword(updated, "password3")))
                 .andExpect(status().isNoContent());
-        USER_MATCHER.assertMatch(userRepository.get(USER3_ID), updated);
+        USER_MATCHER.assertMatch(userService.get(USER3_ID), updated);
     }
 
     @Test
@@ -127,7 +127,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userRepository.get(newId), newUser);
+        USER_MATCHER.assertMatch(userService.get(newId), newUser);
     }
 
     @Test
@@ -139,7 +139,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        assertFalse(userRepository.get(USER3_ID).isEnabled());
+        assertFalse(userService.get(USER3_ID).isEnabled());
     }
 
     @Test

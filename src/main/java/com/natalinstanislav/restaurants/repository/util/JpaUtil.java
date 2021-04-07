@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository;
+package com.natalinstanislav.restaurants.repository.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

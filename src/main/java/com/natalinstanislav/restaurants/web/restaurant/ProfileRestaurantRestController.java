@@ -1,8 +1,8 @@
 package com.natalinstanislav.restaurants.web.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
-import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
+import com.natalinstanislav.restaurants.service.RestaurantService;
+import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.to.RestaurantTo;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping(value = "/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestaurantRestController extends AbstractRestaurantController{
 
-    public ProfileRestaurantRestController(RestaurantRepository restaurantRepository, VoteRepository voteRepository) {
-        super(restaurantRepository, voteRepository);
+    public ProfileRestaurantRestController(RestaurantService restaurantService, VoteService voteService) {
+        super(restaurantService, voteService);
     }
 
     @GetMapping("/withMenu")

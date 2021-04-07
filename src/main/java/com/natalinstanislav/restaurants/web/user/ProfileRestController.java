@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.service.UserService;
 import com.natalinstanislav.restaurants.to.UserTo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,8 +18,8 @@ import static com.natalinstanislav.restaurants.web.SecurityUtil.authUserId;
 @RequestMapping("/profile")
 public class ProfileRestController extends AbstractUserController {
 
-    public ProfileRestController(UserRepository userRepository) {
-        super(userRepository);
+    public ProfileRestController(UserService userService) {
+        super(userService);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

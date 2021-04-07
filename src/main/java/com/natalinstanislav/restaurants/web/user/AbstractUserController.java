@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.service.UserService;
 import com.natalinstanislav.restaurants.to.UserTo;
 import com.natalinstanislav.restaurants.util.UserUtil;
 import org.slf4j.Logger;
@@ -15,36 +15,36 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 public abstract class AbstractUserController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AbstractUserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AbstractUserController(UserService userService) {
+        this.userService = userService;
     }
 
     public List<User> getAll() {
         log.info("getAll");
-        return userRepository.getAll();
+        return userService.getAll();
     }
 
     public User get(int id) {
         log.info("get {}", id);
-        return checkNotFoundWithId(userRepository.get(id), id);
+        return checkNotFoundWithId(userService.get(id), id);
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        checkNotFoundWithId(userRepository.delete(id), id);
+        checkNotFoundWithId(userService.delete(id), id);
     }
 
     public User getByMail(String email) {
         log.info("getByEmail {}", email);
         Assert.notNull(email, "email must not be null");
-        return checkNotFound(userRepository.getByEmail(email), "email=" + email);
+        return checkNotFound(userService.getByEmail(email), "email=" + email);
     }
 
     public User getWithVotes(int id) {
         log.info("getWithVotes {}", id);
-        return checkNotFoundWithId(userRepository.getWithVotes(id), id);
+        return checkNotFoundWithId(userService.getWithVotes(id), id);
     }
 
     public void enable(int id, boolean enabled) {
@@ -57,7 +57,7 @@ public abstract class AbstractUserController {
         log.info("create {}", user);
         checkNew(user);
         Assert.notNull(user, "user must not be null");
-        return userRepository.save(user);
+        return userService.save(user);
     }
 
     public User create(UserTo userTo) {
@@ -69,12 +69,12 @@ public abstract class AbstractUserController {
         log.info("update {} with id={}", user, id);
         Assert.notNull(user, "user must not be null");
         assureIdConsistent(user, id);
-        checkNotFoundWithId(userRepository.save(user), id);
+        checkNotFoundWithId(userService.save(user), id);
     }
 
     public void update(UserTo userTo, int id) {
         log.info("update {} with id={}", userTo, id);
         User user = get(id);
-        userRepository.save(UserUtil.updateFromTo(user, userTo));
+        userService.save(UserUtil.updateFromTo(user, userTo));
     }
 }

@@ -1,8 +1,8 @@
 package com.natalinstanislav.restaurants.web.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
-import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
+import com.natalinstanislav.restaurants.service.RestaurantService;
+import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.to.RestaurantTo;
 import com.natalinstanislav.restaurants.util.RestaurantUtil;
 import org.slf4j.Logger;
@@ -22,51 +22,51 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFound
 public abstract class AbstractRestaurantController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
 
-    private final VoteRepository voteRepository;
+    private final VoteService voteService;
 
-    public AbstractRestaurantController(RestaurantRepository restaurantRepository, VoteRepository voteRepository) {
-        this.restaurantRepository = restaurantRepository;
-        this.voteRepository = voteRepository;
+    public AbstractRestaurantController(RestaurantService restaurantService, VoteService voteService) {
+        this.restaurantService = restaurantService;
+        this.voteService = voteService;
     }
 
     public Restaurant get(int id) {
         log.info("get restaurant with id {}", id);
-        return checkNotFoundWithId(restaurantRepository.get(id), id);
+        return checkNotFoundWithId(restaurantService.get(id), id);
     }
 
     public Restaurant getWithMenu(int id, LocalDate date) {
         log.info("getWithMenu restaurant with id {} with menu from date {}", id, date);
-        return restaurantRepository.getWithMenu(id, date);
+        return restaurantService.getWithMenu(id, date);
     }
 
     public RestaurantTo getWithMenuAndRating(int id, LocalDate date) {
         log.info("getWithMenuAndRating restaurant with id {} with menu from date {}", id, date);
-        Restaurant restaurant = restaurantRepository.getWithMenu(id, date);
-        int rating = voteRepository.getAllByDateForRestaurant(date, id).size();
+        Restaurant restaurant = restaurantService.getWithMenu(id, date);
+        int rating = voteService.getAllByDateForRestaurant(date, id).size();
         return RestaurantUtil.createTo(restaurant, rating);
     }
 
     public void delete(int id) {
         log.info("delete restaurant with id {}", id);
-        checkNotFoundWithId(restaurantRepository.delete(id), id);
+        checkNotFoundWithId(restaurantService.delete(id), id);
     }
 
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return restaurantRepository.getAll();
+        return restaurantService.getAll();
     }
 
     public List<Restaurant> getAllWithMenu(LocalDate date) {
         log.info("getAllWithMenu from date {}", date);
-        return restaurantRepository.getAllWithMenu(date);
+        return restaurantService.getAllWithMenu(date);
     }
 
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate date) {
         log.info("getAllWithMenuAndRating from date {}", date);
-        List<Restaurant> restaurants = restaurantRepository.getAllWithMenu(date);
-        Map<Restaurant, Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteRepository.getAllByDate(date));
+        List<Restaurant> restaurants = restaurantService.getAllWithMenu(date);
+        Map<Restaurant, Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteService.getAllByDate(date));
         return RestaurantUtil.getTos(restaurants, restaurantRatingMap);
     }
 
@@ -74,7 +74,7 @@ public abstract class AbstractRestaurantController {
         log.info("create {}", restaurant);
         Assert.notNull(restaurant, "restaurant must not be null");
         checkNew(restaurant);
-        Restaurant created = restaurantRepository.save(restaurant);
+        Restaurant created = restaurantService.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/admin/restaurants" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -85,6 +85,6 @@ public abstract class AbstractRestaurantController {
         log.info("update {} with id={}", restaurant, id);
         Assert.notNull(restaurant, "restaurant must not be null");
         assureIdConsistent(restaurant, id);
-        checkNotFoundWithId(restaurantRepository.save(restaurant), restaurant.getId());
+        checkNotFoundWithId(restaurantService.save(restaurant), restaurant.getId());
     }
 }

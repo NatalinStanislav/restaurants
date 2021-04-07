@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ import java.util.List;
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestController extends AbstractUserController {
 
-    public AdminRestController(UserRepository userRepository) {
-        super(userRepository);
+    public AdminRestController(UserService userService) {
+        super(userService);
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.user;
 
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.user.UserRepository;
+import com.natalinstanislav.restaurants.service.UserService;
 import com.natalinstanislav.restaurants.to.UserTo;
 import com.natalinstanislav.restaurants.util.UserUtil;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Test
     void get() throws Exception {
@@ -48,7 +48,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user3)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        USER_MATCHER.assertMatch(userRepository.getAll(), admin, user0, user1, user2, user4);
+        USER_MATCHER.assertMatch(userService.getAll(), admin, user0, user1, user2, user4);
     }
 
     @Test
@@ -65,7 +65,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userRepository.get(newId), newUser);
+        USER_MATCHER.assertMatch(userService.get(newId), newUser);
     }
 
     @Test
@@ -77,7 +77,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userRepository.get(USER3_ID), UserUtil.updateFromTo(new User(user3), updatedTo));
+        USER_MATCHER.assertMatch(userService.get(USER3_ID), UserUtil.updateFromTo(new User(user3), updatedTo));
     }
 
     @Test

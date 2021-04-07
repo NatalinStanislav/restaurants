@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.vote;
 
 import com.natalinstanislav.restaurants.model.Vote;
-import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
+import com.natalinstanislav.restaurants.service.VoteService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping(value = "/admin/votes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminVoteRestController extends AbstractVoteController {
 
-    public AdminVoteRestController(VoteRepository voteRepository) {
-        super(voteRepository);
+    public AdminVoteRestController(VoteService voteService) {
+        super(voteService);
     }
 
     @GetMapping("/{id}")

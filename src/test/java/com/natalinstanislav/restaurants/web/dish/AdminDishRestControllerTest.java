@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.dish;
 
 import com.natalinstanislav.restaurants.model.Dish;
-import com.natalinstanislav.restaurants.repository.dish.DishRepository;
+import com.natalinstanislav.restaurants.service.DishService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminDishRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private DishRepository dishRepository;
+    private DishService dishService;
 
     @Test
     void create() throws Exception {
@@ -41,7 +41,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
-        DISH_MATCHER.assertMatch(dishRepository.get(newId), newDish);
+        DISH_MATCHER.assertMatch(dishService.get(newId), newDish);
     }
 
     @Test
@@ -50,7 +50,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(dishRepository.get(MEXICAN_PIZZA_ID));
+        assertNull(dishService.get(MEXICAN_PIZZA_ID));
     }
 
     @Test
@@ -131,7 +131,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        DISH_MATCHER.assertMatch(dishRepository.get(MEXICAN_PIZZA_ID), updated);
+        DISH_MATCHER.assertMatch(dishService.get(MEXICAN_PIZZA_ID), updated);
     }
 
     @Test

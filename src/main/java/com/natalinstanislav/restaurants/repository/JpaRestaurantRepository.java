@@ -1,4 +1,4 @@
-package com.natalinstanislav.restaurants.repository.restaurant;
+package com.natalinstanislav.restaurants.repository;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
 import org.springframework.data.jpa.repository.EntityGraph;

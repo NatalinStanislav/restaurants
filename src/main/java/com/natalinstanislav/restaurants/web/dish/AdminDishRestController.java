@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.dish;
 
 import com.natalinstanislav.restaurants.model.Dish;
-import com.natalinstanislav.restaurants.repository.dish.DishRepository;
+import com.natalinstanislav.restaurants.service.DishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,10 +24,10 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 public class AdminDishRestController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final DishRepository dishRepository;
+    private final DishService dishService;
 
-    public AdminDishRestController(DishRepository dishRepository) {
-        this.dishRepository = dishRepository;
+    public AdminDishRestController(DishService dishService) {
+        this.dishService = dishService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public class AdminDishRestController {
         log.info("create {} for restaurant with id {}", dish, restaurantId);
         Assert.notNull(dish, "dish must not be null");
         checkNew(dish);
-        Dish created = dishRepository.save(dish, restaurantId);
+        Dish created = dishService.save(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/admin/dishes" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -46,31 +46,31 @@ public class AdminDishRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete dish with id {}", id);
-        checkNotFoundWithId(dishRepository.delete(id), id);
+        checkNotFoundWithId(dishService.delete(id), id);
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
         log.info("get dish with id {}", id);
-        return checkNotFoundWithId(dishRepository.get(id), id);
+        return checkNotFoundWithId(dishService.get(id), id);
     }
 
     @GetMapping
     public List<Dish> getAll() {
         log.info("getAll");
-        return dishRepository.getAll();
+        return dishService.getAll();
     }
 
     @GetMapping("/fromRestaurantByDate")
     public List<Dish> getAllFromRestaurantByDate(@RequestParam int restaurantId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAllFromRestaurantByDate from restaurantID {} by date {}", restaurantId, date);
-        return dishRepository.getAllFromRestaurantByDate(restaurantId, date);
+        return dishService.getAllFromRestaurantByDate(restaurantId, date);
     }
 
     @GetMapping("/byDate")
     public List<Dish> getAllByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAllByDate by date {}", date);
-        return dishRepository.getAllByDate(date);
+        return dishService.getAllByDate(date);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -79,6 +79,6 @@ public class AdminDishRestController {
         log.info("update dish {} with id={} for restaurant with id {}", dish, id, restaurantId);
         Assert.notNull(dish, "dish must not be null");
         assureIdConsistent(dish, id);
-        checkNotFoundWithId(dishRepository.save(dish, restaurantId), dish.getId());
+        checkNotFoundWithId(dishService.save(dish, restaurantId), dish.getId());
     }
 }

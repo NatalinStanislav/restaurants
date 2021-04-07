@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.restaurant;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.repository.restaurant.RestaurantRepository;
+import com.natalinstanislav.restaurants.service.RestaurantService;
 import com.natalinstanislav.restaurants.to.RestaurantTo;
 import com.natalinstanislav.restaurants.util.RestaurantUtil;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private RestaurantService restaurantService;
 
     @Test
     void get() throws Exception {
@@ -81,7 +81,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(restaurantRepository.get(PIZZA_HUT_ID));
+        assertNull(restaurantService.get(PIZZA_HUT_ID));
     }
 
     @Test
@@ -127,7 +127,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.get(newId), newRestaurant);
+        RESTAURANT_MATCHER.assertMatch(restaurantService.get(newId), newRestaurant);
     }
 
     @Test
@@ -138,7 +138,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.get(PIZZA_HUT_ID), updated);
+        RESTAURANT_MATCHER.assertMatch(restaurantService.get(PIZZA_HUT_ID), updated);
     }
 
     @Test

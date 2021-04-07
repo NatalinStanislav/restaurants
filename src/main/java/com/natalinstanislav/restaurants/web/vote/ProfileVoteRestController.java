@@ -1,7 +1,7 @@
 package com.natalinstanislav.restaurants.web.vote;
 
 import com.natalinstanislav.restaurants.model.Vote;
-import com.natalinstanislav.restaurants.repository.vote.VoteRepository;
+import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.util.TimeValidationUtil;
 import com.natalinstanislav.restaurants.web.SecurityUtil;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping(value = "/profile/votes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileVoteRestController extends AbstractVoteController {
 
-    public ProfileVoteRestController(VoteRepository voteRepository) {
-        super(voteRepository);
+    public ProfileVoteRestController(VoteService voteService) {
+        super(voteService);
     }
 
     @Override

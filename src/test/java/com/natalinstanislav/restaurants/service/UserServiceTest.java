@@ -1,8 +1,8 @@
-package com.natalinstanislav.restaurants.repository.user;
+package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.JpaUtil;
+import com.natalinstanislav.restaurants.repository.util.JpaUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         "classpath:spring/spring-db.xml"
 })
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class DataJpaUserRepositoryTest {
+public class UserServiceTest {
 
     @Autowired
-    protected UserRepository repository;
+    protected UserService userService;
 
     @Autowired
     protected JpaUtil jpaUtil;
@@ -45,56 +45,56 @@ public class DataJpaUserRepositoryTest {
 
     @Test
     void get() {
-        User user = repository.get(ADMIN_ID);
+        User user = userService.get(ADMIN_ID);
         USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(repository.get(NOT_FOUND)).isNull();
+        Assertions.assertThat(userService.get(NOT_FOUND)).isNull();
     }
 
     @Test
     void duplicateMailCreate() throws Exception {
         assertThrows(DataAccessException.class, () ->
-                repository.save(new User(null, "Duplicate", "user0@yandex.ru", "newPass", Role.USER)));
+                userService.save(new User(null, "Duplicate", "user0@yandex.ru", "newPass", Role.USER)));
     }
 
     @Test
     void getByEmail() {
-        User user = repository.getByEmail("admin@gmail.com");
+        User user = userService.getByEmail("admin@gmail.com");
         USER_MATCHER.assertMatch(user, admin);    }
 
     @Test
     void getAll() {
-        List<User> all = repository.getAll();
+        List<User> all = userService.getAll();
         USER_MATCHER.assertMatch(all, admin, user0, user1, user2, user3, user4);
     }
 
     @Test
     void save() {
         User newUser = getNew();
-        User created = repository.save(newUser);
+        User created = userService.save(newUser);
         Integer newId = created.getId();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(repository.get(newId), newUser);
+        USER_MATCHER.assertMatch(userService.get(newId), newUser);
     }
 
     @Test
     void delete() throws Exception {
-        Assertions.assertThat(repository.get(ADMIN_ID)).isNotNull();
-        repository.delete(ADMIN_ID);
-        Assertions.assertThat(repository.get(ADMIN_ID)).isNull();
+        Assertions.assertThat(userService.get(ADMIN_ID)).isNotNull();
+        userService.delete(ADMIN_ID);
+        Assertions.assertThat(userService.get(ADMIN_ID)).isNull();
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(repository.delete(NOT_FOUND));    }
+        assertFalse(userService.delete(NOT_FOUND));    }
 
     @Test
     void getWithVotes() throws Exception {
-        User user3WithVotes = repository.getWithVotes(USER3_ID);
+        User user3WithVotes = userService.getWithVotes(USER3_ID);
         user3.setVotes(ALL_VOTES_FROM_USER3);
         USER_WITH_VOTES_MATCHER.assertMatch(user3WithVotes, user3);
     }
