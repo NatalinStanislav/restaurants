@@ -19,10 +19,10 @@ public interface JpaRestaurantRepository extends JpaRepository<Restaurant, Integ
     int delete(@Param("id") int id);
 
     @EntityGraph(attributePaths = {"dishes"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r JOIN r.dishes d WHERE r.id=?1 AND d.dishDate=?2")
+    @Query("SELECT r FROM Restaurant r JOIN r.dishes d WHERE r.id=?1 AND d.dishDate=?2 ORDER BY d.id")
     Restaurant getWithMenu(int id, LocalDate date);
 
     @EntityGraph(attributePaths = {"dishes"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r JOIN r.dishes d WHERE d.dishDate=?1")
+    @Query("SELECT r FROM Restaurant r JOIN r.dishes d WHERE d.dishDate=?1 ORDER BY d.id")
     List<Restaurant> getAllWithMenu(LocalDate date);
 }
