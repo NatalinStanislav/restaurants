@@ -13,15 +13,21 @@ public class VoteTestData {
     public static TestMatcher<Vote> VOTE_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Vote.class, "restaurant", "user");
 
     public static final int NOT_FOUND = 123456;
-    public static final int VOTE_USER0_30_OF_JANUARY_ID = START_SEQ + 21;
-    public static final int VOTE_USER1_30_OF_JANUARY_ID = START_SEQ + 22;
-    public static final int VOTE_USER2_30_OF_JANUARY_ID = START_SEQ + 23;
-    public static final int VOTE_USER3_30_OF_JANUARY_ID = START_SEQ + 24;
-    public static final int VOTE_USER4_30_OF_JANUARY_ID = START_SEQ + 25;
-    public static final int VOTE_ADMIN_30_OF_JANUARY_ID = START_SEQ + 26;
-    public static final int VOTE_USER0_31_OF_JANUARY_ID = START_SEQ + 27;
-    public static final int VOTE_USER3_31_OF_JANUARY_ID = START_SEQ + 28;
-    public static final int VOTE_ADMIN_31_OF_JANUARY_ID = START_SEQ + 29;
+    public static final int VOTE_USER0_30_OF_JANUARY_ID = START_SEQ + 30;
+    public static final int VOTE_USER1_30_OF_JANUARY_ID = START_SEQ + 31;
+    public static final int VOTE_USER2_30_OF_JANUARY_ID = START_SEQ + 32;
+    public static final int VOTE_USER3_30_OF_JANUARY_ID = START_SEQ + 33;
+    public static final int VOTE_USER4_30_OF_JANUARY_ID = START_SEQ + 34;
+    public static final int VOTE_ADMIN_30_OF_JANUARY_ID = START_SEQ + 35;
+    public static final int VOTE_USER0_31_OF_JANUARY_ID = START_SEQ + 36;
+    public static final int VOTE_USER3_31_OF_JANUARY_ID = START_SEQ + 37;
+    public static final int VOTE_ADMIN_31_OF_JANUARY_ID = START_SEQ + 38;
+    public static final int VOTE_USER0_TODAY_ID = START_SEQ + 39;
+    public static final int VOTE_USER1_TODAY_ID = START_SEQ + 40;
+    public static final int VOTE_USER2_TODAY_ID = START_SEQ + 41;
+    public static final int VOTE_USER3_TODAY_ID = START_SEQ + 42;
+    public static final int VOTE_USER4_TODAY_ID = START_SEQ + 43;
+    public static final int VOTE_ADMIN_TODAY_ID = START_SEQ + 44;
 
     public static final Vote VoteUser0January30 = new Vote(VOTE_USER0_30_OF_JANUARY_ID, PizzaHut, LocalDate.of(2020, 1, 30), user0);
     public static final Vote VoteUser1January30 = new Vote(VOTE_USER1_30_OF_JANUARY_ID, KebabHouse, LocalDate.of(2020, 1, 30), user1);
@@ -32,11 +38,18 @@ public class VoteTestData {
     public static final Vote VoteUser0January31 = new Vote(VOTE_USER0_31_OF_JANUARY_ID, PizzaHut, LocalDate.of(2020, 1, 31), user0);
     public static final Vote VoteUser3January31 = new Vote(VOTE_USER3_31_OF_JANUARY_ID, PizzaHut, LocalDate.of(2020, 1, 31), user3);
     public static final Vote VoteAdminJanuary31 = new Vote(VOTE_ADMIN_31_OF_JANUARY_ID, PizzaHut, LocalDate.of(2020, 1, 31), admin);
+    public static final Vote VoteUser0Today = new Vote(VOTE_USER0_TODAY_ID, SushiRoll, LocalDate.now(), user0);
+    public static final Vote VoteUser1Today = new Vote(VOTE_USER1_TODAY_ID, SushiRoll, LocalDate.now(), user1);
+    public static final Vote VoteUser2Today = new Vote(VOTE_USER2_TODAY_ID, SushiRoll, LocalDate.now(), user2);
+    public static final Vote VoteUser3Today = new Vote(VOTE_USER3_TODAY_ID, SushiRoll, LocalDate.now(), user3);
+    public static final Vote VoteUser4Today = new Vote(VOTE_USER4_TODAY_ID, PizzaHut, LocalDate.now(), user4);
+    public static final Vote VoteAdminToday = new Vote(VOTE_ADMIN_TODAY_ID, KebabHouse, LocalDate.now(), admin);
 
     public static List<Vote> ALL_VOTES = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30, VoteUser3January30,
-            VoteUser4January30, VoteAdminJanuary30, VoteUser0January31, VoteUser3January31, VoteAdminJanuary31);
+            VoteUser4January30, VoteAdminJanuary30, VoteUser0January31, VoteUser3January31, VoteAdminJanuary31,
+            VoteUser0Today, VoteUser1Today, VoteUser2Today, VoteUser3Today, VoteUser4Today, VoteAdminToday);
 
-    public static List<Vote> ALL_VOTES_FROM_USER3 = List.of(VoteUser3January30, VoteUser3January31);
+    public static List<Vote> ALL_VOTES_FROM_USER3 = List.of(VoteUser3January30, VoteUser3January31, VoteUser3Today);
 
     public static List<Vote> ALL_VOTES_FROM_30_OF_JANUARY = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30,
             VoteUser3January30, VoteUser4January30, VoteAdminJanuary30);

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Dish extends AbstractNamedEntity {
     @Column(name = "cost", nullable = false)
     @NotNull
-    @Range(min = 1, max = 10000)
+    @Range(min = 1, max = 1000000)
     private Integer cost;
 
     @ManyToOne(fetch = FetchType.LAZY)

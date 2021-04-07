@@ -24,6 +24,15 @@ public class DishTestData {
     public static final int HOT_DOG_ID = START_SEQ + 18;
     public static final int CHIPS_ID = START_SEQ + 19;
     public static final int TEA_ID = START_SEQ + 20;
+    public static final int TODAY_MEXICAN_PIZZA_ID = START_SEQ + 21;
+    public static final int TODAY_ITALIAN_SALAD_ID = START_SEQ + 22;
+    public static final int TODAY_CAPPUCCINO_ID = START_SEQ + 23;
+    public static final int TODAY_PHILADELPHIA_ROLL_ID = START_SEQ + 24;
+    public static final int TODAY_FISH_SALAD_ID = START_SEQ + 25;
+    public static final int TODAY_GREEN_TEA_ID = START_SEQ + 26;
+    public static final int TODAY_KEBAB_XXL_ID = START_SEQ + 27;
+    public static final int TODAY_GARLIC_SAUCE_ID = START_SEQ + 28;
+    public static final int TODAY_BEER_ID = START_SEQ + 29;
 
     public static final Dish MexicanPizza = new Dish(MEXICAN_PIZZA_ID, "Mexican pizza", 999, PizzaHut, LocalDate.of(2020, 1, 30));
     public static final Dish ItalianSalad = new Dish(ITALIAN_SALAD_ID, "Italian salad", 349, PizzaHut, LocalDate.of(2020, 1, 30));
@@ -37,12 +46,22 @@ public class DishTestData {
     public static final Dish HotDog = new Dish(HOT_DOG_ID, "HotDog", 500, PizzaHut, LocalDate.of(2020, 1, 31));
     public static final Dish Chips = new Dish(CHIPS_ID, "Chips", 299, PizzaHut, LocalDate.of(2020, 1, 31));
     public static final Dish Tea = new Dish(TEA_ID, "Tea", 99, PizzaHut, LocalDate.of(2020, 1, 31));
+    public static final Dish TodayMexicanPizza = new Dish(TODAY_MEXICAN_PIZZA_ID, "Today Mexican pizza", 999, PizzaHut, LocalDate.now());
+    public static final Dish TodayItalianSalad = new Dish(TODAY_ITALIAN_SALAD_ID, "Today Italian salad", 349, PizzaHut, LocalDate.now());
+    public static final Dish TodayCappuccino = new Dish(TODAY_CAPPUCCINO_ID, "Today Cappuccino", 199, PizzaHut, LocalDate.now());
+    public static final Dish TodayPhiladelphiaRoll = new Dish(TODAY_PHILADELPHIA_ROLL_ID, "Today Philadelphia roll", 849, SushiRoll, LocalDate.now());
+    public static final Dish TodayFishSalad = new Dish(TODAY_FISH_SALAD_ID, "Today Fish salad", 249, SushiRoll, LocalDate.now());
+    public static final Dish TodayGreenTea = new Dish(TODAY_GREEN_TEA_ID, "Today Green tea", 99, SushiRoll, LocalDate.now());
+    public static final Dish TodayKebabXXL = new Dish(TODAY_KEBAB_XXL_ID, "Today Kebab XXL", 1249, KebabHouse, LocalDate.now());
+    public static final Dish TodayGarlicSauce = new Dish(TODAY_GARLIC_SAUCE_ID, "Today Garlic sauce", 99, KebabHouse, LocalDate.now());
+    public static final Dish TodayBeer = new Dish(TODAY_BEER_ID, "Today Beer", 399, KebabHouse, LocalDate.now());
 
     public static String ISO_30_OF_JANUARY = "2020-01-30";
     public static LocalDate LOCALDATE_30_OF_JANUARY = LocalDate.of(2020, 1, 30);
 
     public static List<Dish> ALL_DISHES = List.of(MexicanPizza, ItalianSalad, Cappuccino, PhiladelphiaRoll, FishSalad, GreenTea,
-            KebabXXL, GarlicSauce, Beer, HotDog, Chips, Tea);
+            KebabXXL, GarlicSauce, Beer, HotDog, Chips, Tea, TodayMexicanPizza, TodayItalianSalad, TodayCappuccino,
+            TodayPhiladelphiaRoll, TodayFishSalad, TodayGreenTea, TodayKebabXXL, TodayGarlicSauce, TodayBeer);
 
     public static List<Dish> ALL_DISHES_FROM_30_OF_JANUARY = List.of(MexicanPizza, ItalianSalad, Cappuccino, PhiladelphiaRoll, FishSalad, GreenTea,
             KebabXXL, GarlicSauce, Beer);
