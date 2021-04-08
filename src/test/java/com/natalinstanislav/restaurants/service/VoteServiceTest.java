@@ -1,7 +1,9 @@
 package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Vote;
-import com.natalinstanislav.restaurants.service.VoteService;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
+import com.natalinstanislav.restaurants.util.exception.TimeValidationException;
+import com.natalinstanislav.restaurants.util.exception.VoteDuplicateException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
@@ -17,7 +20,7 @@ import static com.natalinstanislav.restaurants.UserTestData.ADMIN_ID;
 import static com.natalinstanislav.restaurants.UserTestData.USER3_ID;
 import static com.natalinstanislav.restaurants.UserTestData.USER0_ID;
 import static com.natalinstanislav.restaurants.VoteTestData.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -30,9 +33,9 @@ public class VoteServiceTest {
     protected VoteService voteService;
 
     @Test
-    void save() {
-        Vote newVote = getNew();
-        Vote created = voteService.save(newVote, PIZZA_HUT_ID, USER3_ID);
+    void create() {
+        Vote newVote = getNewNow();
+        Vote created = voteService.create(PIZZA_HUT_ID, USER3_ID);
         Integer newId = created.getId();
         newVote.setId(newId);
         VOTE_MATCHER.assertMatch(created, newVote);
@@ -40,15 +43,30 @@ public class VoteServiceTest {
     }
 
     @Test
+    void createTwiceByDay() {
+        assertThrows(VoteDuplicateException.class, () -> voteService.create(PIZZA_HUT_ID, USER0_ID));
+    }
+
+    @Test
+    void update() throws Exception {
+        Vote updated = getUpdated();
+        if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
+            assertThrows(TimeValidationException.class, () -> voteService.update(updated, VOTE_USER0_TODAY_ID, PIZZA_HUT_ID, USER0_ID));
+        } else {
+            voteService.update(updated, VOTE_USER0_TODAY_ID, PIZZA_HUT_ID, USER0_ID);
+            VOTE_MATCHER.assertMatch(voteService.get(VOTE_USER0_TODAY_ID), getUpdated());
+        }
+    }
+
+    @Test
     void delete() {
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
         voteService.delete(VOTE_USER0_30_OF_JANUARY_ID);
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNull();
+        assertThrows(NotFoundException.class, () -> voteService.get(VOTE_USER0_30_OF_JANUARY_ID));
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(voteService.delete(NOT_FOUND));
+        assertThrows(NotFoundException.class, () -> voteService.delete(NOT_FOUND));
     }
 
     @Test
@@ -59,7 +77,7 @@ public class VoteServiceTest {
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(voteService.get(NOT_FOUND)).isNull();
+        assertThrows(NotFoundException.class, () -> voteService.get(NOT_FOUND));
     }
 
     @Test
@@ -106,22 +124,17 @@ public class VoteServiceTest {
 
     @Test
     void getNotOwn() {
-        Vote vote = voteService.get(VOTE_ADMIN_30_OF_JANUARY_ID, USER3_ID);
-        Assertions.assertThat(vote).isNull();
+        assertThrows(NotFoundException.class, () -> voteService.get(VOTE_ADMIN_30_OF_JANUARY_ID, USER3_ID));
     }
 
     @Test
     void deleteFromUser() {
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
         voteService.delete(VOTE_USER0_30_OF_JANUARY_ID, USER0_ID);
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNull();
+        assertThrows(NotFoundException.class, () -> voteService.get(VOTE_USER0_30_OF_JANUARY_ID));
     }
-
 
     @Test
     void deleteFromUserNotOwn() {
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
-        voteService.delete(VOTE_USER0_30_OF_JANUARY_ID, USER3_ID);
-        Assertions.assertThat(voteService.get(VOTE_USER0_30_OF_JANUARY_ID)).isNotNull();
+        assertThrows(NotFoundException.class, () -> voteService.delete(VOTE_USER0_30_OF_JANUARY_ID, USER3_ID));
     }
 }

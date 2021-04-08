@@ -3,6 +3,7 @@ package com.natalinstanislav.restaurants.web.dish;
 import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.service.DishService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ class AdminDishRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(dishService.get(MEXICAN_PIZZA_ID));
+        assertThrows(NotFoundException.class, () -> dishService.get(MEXICAN_PIZZA_ID));
     }
 
     @Test

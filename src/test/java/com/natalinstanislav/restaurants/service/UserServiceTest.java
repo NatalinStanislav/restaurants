@@ -3,6 +3,7 @@ package com.natalinstanislav.restaurants.service;
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.util.JpaUtil;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,7 @@ import java.util.List;
 
 import static com.natalinstanislav.restaurants.UserTestData.*;
 import static com.natalinstanislav.restaurants.VoteTestData.ALL_VOTES_FROM_USER3;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringJUnitConfig(locations = {
@@ -51,19 +51,20 @@ public class UserServiceTest {
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(userService.get(NOT_FOUND)).isNull();
+        assertThrows(NotFoundException.class, () -> userService.get(NOT_FOUND));
     }
 
     @Test
     void duplicateMailCreate() throws Exception {
         assertThrows(DataAccessException.class, () ->
-                userService.save(new User(null, "Duplicate", "user0@yandex.ru", "newPass", Role.USER)));
+                userService.create(new User(null, "Duplicate", "user0@yandex.ru", "newPass", Role.USER)));
     }
 
     @Test
     void getByEmail() {
         User user = userService.getByEmail("admin@gmail.com");
-        USER_MATCHER.assertMatch(user, admin);    }
+        USER_MATCHER.assertMatch(user, admin);
+    }
 
     @Test
     void getAll() {
@@ -74,7 +75,7 @@ public class UserServiceTest {
     @Test
     void save() {
         User newUser = getNew();
-        User created = userService.save(newUser);
+        User created = userService.create(newUser);
         Integer newId = created.getId();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
@@ -83,19 +84,34 @@ public class UserServiceTest {
 
     @Test
     void delete() throws Exception {
-        Assertions.assertThat(userService.get(ADMIN_ID)).isNotNull();
         userService.delete(ADMIN_ID);
-        Assertions.assertThat(userService.get(ADMIN_ID)).isNull();
+        assertThrows(NotFoundException.class, () -> userService.get(ADMIN_ID));
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(userService.delete(NOT_FOUND));    }
+        assertThrows(NotFoundException.class, () -> userService.delete(NOT_FOUND));
+    }
 
     @Test
     void getWithVotes() throws Exception {
         User user3WithVotes = userService.getWithVotes(USER3_ID);
         user3.setVotes(ALL_VOTES_FROM_USER3);
         USER_WITH_VOTES_MATCHER.assertMatch(user3WithVotes, user3);
+    }
+
+    @Test
+    void update() throws Exception {
+        User updated = getUpdated();
+        userService.update(updated);
+        USER_MATCHER.assertMatch(userService.get(USER3_ID), getUpdated());
+    }
+
+    @Test
+    void enable() {
+        userService.enable(USER3_ID, false);
+        assertFalse(userService.get(USER3_ID).isEnabled());
+        userService.enable(USER3_ID, true);
+        assertTrue(userService.get(USER3_ID).isEnabled());
     }
 }

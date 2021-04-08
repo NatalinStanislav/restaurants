@@ -33,7 +33,7 @@ public abstract class AbstractRestaurantController {
 
     public Restaurant get(int id) {
         log.info("get restaurant with id {}", id);
-        return checkNotFoundWithId(restaurantService.get(id), id);
+        return restaurantService.get(id);
     }
 
     public Restaurant getWithMenu(int id, LocalDate date) {
@@ -50,7 +50,7 @@ public abstract class AbstractRestaurantController {
 
     public void delete(int id) {
         log.info("delete restaurant with id {}", id);
-        checkNotFoundWithId(restaurantService.delete(id), id);
+        restaurantService.delete(id);
     }
 
     public List<Restaurant> getAll() {
@@ -72,9 +72,8 @@ public abstract class AbstractRestaurantController {
 
     public ResponseEntity<Restaurant> create(Restaurant restaurant) {
         log.info("create {}", restaurant);
-        Assert.notNull(restaurant, "restaurant must not be null");
         checkNew(restaurant);
-        Restaurant created = restaurantService.save(restaurant);
+        Restaurant created = restaurantService.create(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/admin/restaurants" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -83,8 +82,7 @@ public abstract class AbstractRestaurantController {
 
     public void update(Restaurant restaurant, int id) {
         log.info("update {} with id={}", restaurant, id);
-        Assert.notNull(restaurant, "restaurant must not be null");
         assureIdConsistent(restaurant, id);
-        checkNotFoundWithId(restaurantService.save(restaurant), restaurant.getId());
+        restaurantService.update(restaurant);
     }
 }

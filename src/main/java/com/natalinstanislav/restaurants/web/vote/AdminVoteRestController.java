@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants.web.vote;
 
 import com.natalinstanislav.restaurants.model.Vote;
 import com.natalinstanislav.restaurants.service.VoteService;
+import com.natalinstanislav.restaurants.web.SecurityUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -56,23 +56,17 @@ public class AdminVoteRestController extends AbstractVoteController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createWithLocation(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-                                       @RequestParam int restaurantId, @RequestParam int userId) {
-        Vote vote = super.create(dateTime, restaurantId, userId);
-        if (vote != null) {
-            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/admin/votes" + "/{id}")
-                    .buildAndExpand(vote.getId()).toUri();
-            return ResponseEntity.created(uriOfNewResource).body(vote);
-        } else {
-            update(vote, vote.getId(), restaurantId, userId);
-            return null;
-        }
+    public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurantId) {
+        Vote vote = super.create(restaurantId, SecurityUtil.authUserId());
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/admin/votes" + "/{id}")
+                .buildAndExpand(vote.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(vote);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public Vote update(@RequestBody @Valid Vote vote, @PathVariable int id, @RequestParam int restaurantId, @RequestParam int userId) {
-        return super.update(vote, id, restaurantId, userId);
+    public Vote update(@RequestBody @Valid Vote vote, @PathVariable int id, @RequestParam int restaurantId) {
+        return super.update(vote, id, restaurantId, SecurityUtil.authUserId());
     }
 }

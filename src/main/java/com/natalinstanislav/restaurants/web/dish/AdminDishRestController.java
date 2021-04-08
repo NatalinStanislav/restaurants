@@ -33,9 +33,8 @@ public class AdminDishRestController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Dish> create(@RequestBody @Valid Dish dish, @RequestParam int restaurantId) {
         log.info("create {} for restaurant with id {}", dish, restaurantId);
-        Assert.notNull(dish, "dish must not be null");
         checkNew(dish);
-        Dish created = dishService.save(dish, restaurantId);
+        Dish created = dishService.create(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/admin/dishes" + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -46,13 +45,13 @@ public class AdminDishRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete dish with id {}", id);
-        checkNotFoundWithId(dishService.delete(id), id);
+        dishService.delete(id);
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
         log.info("get dish with id {}", id);
-        return checkNotFoundWithId(dishService.get(id), id);
+        return dishService.get(id);
     }
 
     @GetMapping
@@ -77,8 +76,7 @@ public class AdminDishRestController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid Dish dish, @PathVariable int id, @RequestParam int restaurantId) {
         log.info("update dish {} with id={} for restaurant with id {}", dish, id, restaurantId);
-        Assert.notNull(dish, "dish must not be null");
         assureIdConsistent(dish, id);
-        checkNotFoundWithId(dishService.save(dish, restaurantId), dish.getId());
+        dishService.update(dish, restaurantId);
     }
 }

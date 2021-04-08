@@ -4,6 +4,7 @@ import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.service.UserService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertNull(userService.get(USER3_ID));
+        assertThrows(NotFoundException.class, () -> userService.get(USER3_ID));
     }
 
     @Test

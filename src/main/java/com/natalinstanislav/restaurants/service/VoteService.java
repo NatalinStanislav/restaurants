@@ -4,11 +4,16 @@ import com.natalinstanislav.restaurants.model.Vote;
 import com.natalinstanislav.restaurants.repository.JpaRestaurantRepository;
 import com.natalinstanislav.restaurants.repository.JpaUserRepository;
 import com.natalinstanislav.restaurants.repository.JpaVoteRepository;
+import com.natalinstanislav.restaurants.util.TimeValidationUtil;
+import com.natalinstanislav.restaurants.util.exception.VoteDuplicateException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class VoteService {
@@ -24,18 +29,18 @@ public class VoteService {
         this.userRepository = userRepository;
     }
 
-    public Vote save(Vote vote, int restaurantId, int userId) {
-        vote.setRestaurant(restaurantRepository.findById(restaurantId).orElse(null));
-        vote.setUser(userRepository.findById(userId).orElse(null));
-        return voteRepository.save(vote);
-    }
-
-    public boolean delete(int id) {
-        return voteRepository.delete(id) != 0;
+    public void delete(int id) {
+        checkNotFoundWithId(voteRepository.delete(id) != 0, id);
     }
 
     public Vote get(int id) {
-        return voteRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(voteRepository.findById(id).orElse(null), id);
+    }
+
+    public Vote get(int id, int userId) {
+        return checkNotFoundWithId(voteRepository.findById(id)
+                .filter(vote -> vote.getUser().getId() == userId)
+                .orElse(null), id);
     }
 
     public Vote getByDateAndUser(LocalDate date, int userId) {
@@ -58,13 +63,28 @@ public class VoteService {
         return voteRepository.getAllByDateForRestaurant(date, restaurantId);
     }
 
-    public Vote get(int id, int userId) {
-        return voteRepository.findById(id)
-                .filter(vote -> vote.getUser().getId() == userId)
-                .orElse(null);
+    public void delete(int id, int userId) {
+        checkNotFoundWithId(voteRepository.delete(id, userId) != 0, id);
     }
 
-    public boolean delete(int id, int userId) {
-        return voteRepository.delete(id, userId) != 0;
+    public Vote create(int restaurantId, int userId) {
+        LocalDate today = LocalDate.now();
+        Vote vote = getByDateAndUser(today, userId);
+        if (vote != null) {
+            throw new VoteDuplicateException("You already voted today! If you want to change your choice, you can do it in " +
+                    "special section in your personal account.");
+        }
+        vote = new Vote(null, today);
+        vote.setRestaurant(restaurantRepository.getOne(restaurantId));
+        vote.setUser(userRepository.getOne(userId));
+        return voteRepository.save(vote);
+    }
+
+    public Vote update(Vote vote, int id, int restaurantId, int userId) {
+        Assert.notNull(vote, "vote must not be null");
+        TimeValidationUtil.checkVoteTime();
+        vote.setRestaurant(restaurantRepository.getOne(restaurantId));
+        vote.setUser(userRepository.getOne(userId));
+        return checkNotFoundWithId(voteRepository.save(vote), id);
     }
 }

@@ -49,7 +49,8 @@ public class AdminRestController extends AbstractUserController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody @Valid User user, @PathVariable int id) {
-        super.update(user, id);
+        log.info("update {} with id={}", user, id);
+        userService.update(user);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

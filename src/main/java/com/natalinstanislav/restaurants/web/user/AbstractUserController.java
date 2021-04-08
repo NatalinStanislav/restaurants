@@ -13,9 +13,9 @@ import java.util.List;
 import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
 
 public abstract class AbstractUserController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final UserService userService;
+    protected final UserService userService;
 
     public AbstractUserController(UserService userService) {
         this.userService = userService;
@@ -28,36 +28,33 @@ public abstract class AbstractUserController {
 
     public User get(int id) {
         log.info("get {}", id);
-        return checkNotFoundWithId(userService.get(id), id);
+        return userService.get(id);
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        checkNotFoundWithId(userService.delete(id), id);
+        userService.delete(id);
     }
 
     public User getByMail(String email) {
         log.info("getByEmail {}", email);
-        Assert.notNull(email, "email must not be null");
-        return checkNotFound(userService.getByEmail(email), "email=" + email);
+        return userService.getByEmail(email);
     }
 
     public User getWithVotes(int id) {
         log.info("getWithVotes {}", id);
-        return checkNotFoundWithId(userService.getWithVotes(id), id);
+        return userService.getWithVotes(id);
     }
 
     public void enable(int id, boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
-        User user = get(id);
-        user.setEnabled(enabled);
+        userService.enable(id, enabled);
     }
 
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        Assert.notNull(user, "user must not be null");
-        return userService.save(user);
+        return userService.create(user);
     }
 
     public User create(UserTo userTo) {
@@ -65,16 +62,8 @@ public abstract class AbstractUserController {
         return create(UserUtil.createNewFromTo(userTo));
     }
 
-    public void update(User user, int id) {
-        log.info("update {} with id={}", user, id);
-        Assert.notNull(user, "user must not be null");
-        assureIdConsistent(user, id);
-        checkNotFoundWithId(userService.save(user), id);
-    }
-
     public void update(UserTo userTo, int id) {
         log.info("update {} with id={}", userTo, id);
-        User user = get(id);
-        userService.save(UserUtil.updateFromTo(user, userTo));
+        userService.update(userTo, id);
     }
 }

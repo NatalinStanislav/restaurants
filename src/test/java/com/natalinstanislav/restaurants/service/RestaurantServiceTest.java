@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
 import com.natalinstanislav.restaurants.service.RestaurantService;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,9 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void save() {
+    void create() {
         Restaurant newRestaurant = getNew();
-        Restaurant created = service.save(newRestaurant);
+        Restaurant created = service.create(newRestaurant);
         Integer newId = created.getId();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
@@ -51,15 +52,21 @@ public class RestaurantServiceTest {
     }
 
     @Test
+    void update() throws Exception {
+        Restaurant updated = getUpdated();
+        service.update(updated);
+        RESTAURANT_MATCHER.assertMatch(service.get(PIZZA_HUT_ID), getUpdated());
+    }
+
+    @Test
     void delete() {
-        Assertions.assertThat(service.get(PIZZA_HUT_ID)).isNotNull();
         service.delete(PIZZA_HUT_ID);
-        Assertions.assertThat(service.get(PIZZA_HUT_ID)).isNull();
+        assertThrows(NotFoundException.class, () -> service.get(PIZZA_HUT_ID));
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(service.delete(NOT_FOUND));
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
@@ -77,7 +84,7 @@ public class RestaurantServiceTest {
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(service.get(NOT_FOUND)).isNull();
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 
     @Test

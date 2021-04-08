@@ -5,17 +5,16 @@ import com.natalinstanislav.restaurants.model.Vote;
 import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
-import org.junit.jupiter.api.Assertions;
+import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.PIZZA_HUT_ID;
-import static com.natalinstanislav.restaurants.RestaurantTestData.SUSHI_ROLL_ID;
 import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
 import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
 import static com.natalinstanislav.restaurants.UserTestData.*;
@@ -72,12 +71,8 @@ class ProfileVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
-        Vote newVote = getNewNow();
-        String isoDateTimeNow = LocalDateTime.now().toString();
-        String isoDateTimeNowForTest = isoDateTimeNow.substring(0, 11) + "10:00:00.000000000";
-
-        ResultActions action = perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + isoDateTimeNowForTest +
-                "&restaurantId=" + PIZZA_HUT_ID)
+        Vote newVote = VoteTestData.getNewNow();
+        ResultActions action = perform(MockMvcRequestBuilders.post("/profile/votes?restaurantId=" + PIZZA_HUT_ID)
                 .with(userHttpBasic(user3))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -89,32 +84,8 @@ class ProfileVoteRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createInvalidTime() throws Exception {
-        String isoDateTimeNow = LocalDateTime.now().toString();
-        String isoDateTimeNowForTest = isoDateTimeNow.substring(0, 11) + "12:00:00.000000000";
-
-        perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + isoDateTimeNowForTest +
-                "&restaurantId=" + PIZZA_HUT_ID)
-                .with(userHttpBasic(user3))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
-    }
-
-    @Test
-    void createInvalidDate() throws Exception {
-        perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + ISO_29_OF_JANUARY_TIME +
-                "&restaurantId=" + PIZZA_HUT_ID)
-                .with(userHttpBasic(user3))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
-    }
-
-    @Test
     void createInvalid() throws Exception {
-        perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + null +
-                "&restaurantId=" + null)
+        perform(MockMvcRequestBuilders.post("/profile/votes?restaurantId=" + null)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user3)))
                 .andDo(print())
@@ -124,29 +95,46 @@ class ProfileVoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void doubleVotePerDay() throws Exception {
-        String isoDateTimeNow = LocalDateTime.now().toString();
-        String isoDateTimeNowForTest = isoDateTimeNow.substring(0, 11) + "10:00:00.000000000";
+        perform(MockMvcRequestBuilders.post("/profile/votes?restaurantId=" + PIZZA_HUT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user2)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+    }
 
-        ResultActions action = perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + isoDateTimeNowForTest +
-                "&restaurantId=" + PIZZA_HUT_ID)
-                .with(userHttpBasic(user3))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+    @Test
+    void update() throws Exception {
+        Vote updated = VoteTestData.getUpdated();
+        if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
 
-        Vote firstVote = readFromJson(action, Vote.class);
-        isoDateTimeNowForTest = isoDateTimeNow.substring(0, 11) + "10:30:00.000000000";
+            perform(MockMvcRequestBuilders.put("/profile/votes/" + VOTE_USER0_TODAY_ID + "?restaurantId=" + PIZZA_HUT_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonUtil.writeValue(updated))
+                    .with(userHttpBasic(user0)))
+                    .andDo(print())
+                    .andExpect(status().isUnprocessableEntity());
+        } else {
+            perform(MockMvcRequestBuilders.put("/profile/votes/" + VOTE_USER0_TODAY_ID + "?restaurantId=" + PIZZA_HUT_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonUtil.writeValue(updated))
+                    .with(userHttpBasic(user0)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent());
 
-        action = perform(MockMvcRequestBuilders.post("/profile/votes?dateTime=" + isoDateTimeNowForTest +
-                "&restaurantId=" + SUSHI_ROLL_ID)
-                .with(userHttpBasic(user3))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+            VOTE_MATCHER.assertMatch(voteService.get(VOTE_USER0_TODAY_ID), updated);
+        }
+    }
 
-        Vote secondVote = readFromJson(action, Vote.class);
+    @Test
+    void updateNotOwn() throws Exception {
+        Vote updated = VoteTestData.getUpdated();
 
-        Assertions.assertEquals(firstVote.getId(), secondVote.getId());
-        Assertions.assertEquals(firstVote.getRestaurant().getName(), "Pizza Hut");
-        Assertions.assertEquals(secondVote.getRestaurant().getName(), "Sushi Roll");
-        VOTE_MATCHER.assertMatch(secondVote, voteService.get(firstVote.getId()));
+        perform(MockMvcRequestBuilders.put("/profile/votes/" + VOTE_USER1_TODAY_ID + "?restaurantId=" + PIZZA_HUT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(user0)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

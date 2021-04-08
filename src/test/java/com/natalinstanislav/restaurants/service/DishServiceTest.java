@@ -1,12 +1,14 @@
 package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Dish;
+import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,9 +28,9 @@ public class DishServiceTest {
     protected DishService service;
 
     @Test
-    void save() {
+    void create() {
         Dish newDish = getNew();
-        Dish created = service.save(newDish, PIZZA_HUT_ID);
+        Dish created = service.create(newDish, PIZZA_HUT_ID);
         Integer newId = created.getId();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
@@ -36,15 +38,21 @@ public class DishServiceTest {
     }
 
     @Test
+    void update() throws Exception {
+        Dish updated = getUpdated();
+        service.update(updated, PIZZA_HUT_ID);
+        DISH_MATCHER.assertMatch(service.get(MEXICAN_PIZZA_ID), getUpdated());
+    }
+
+    @Test
     void delete() {
-        Assertions.assertThat(service.get(FISH_SALAD_ID)).isNotNull();
         service.delete(FISH_SALAD_ID);
-        Assertions.assertThat(service.get(FISH_SALAD_ID)).isNull();
+        assertThrows(NotFoundException.class, () -> service.get(FISH_SALAD_ID));
     }
 
     @Test
     void deletedNotFound() throws Exception {
-        assertFalse(service.delete(NOT_FOUND));
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
@@ -55,7 +63,7 @@ public class DishServiceTest {
 
     @Test
     void getNotFound() throws Exception {
-        Assertions.assertThat(service.get(NOT_FOUND)).isNull();
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 
     @Test

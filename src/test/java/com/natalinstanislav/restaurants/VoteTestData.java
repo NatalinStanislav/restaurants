@@ -25,9 +25,7 @@ public class VoteTestData {
     public static final int VOTE_USER0_TODAY_ID = START_SEQ + 39;
     public static final int VOTE_USER1_TODAY_ID = START_SEQ + 40;
     public static final int VOTE_USER2_TODAY_ID = START_SEQ + 41;
-    public static final int VOTE_USER3_TODAY_ID = START_SEQ + 42;
-    public static final int VOTE_USER4_TODAY_ID = START_SEQ + 43;
-    public static final int VOTE_ADMIN_TODAY_ID = START_SEQ + 44;
+    public static final int VOTE_USER4_TODAY_ID = START_SEQ + 42;
 
     public static final Vote VoteUser0January30 = new Vote(VOTE_USER0_30_OF_JANUARY_ID, PizzaHut, LocalDate.of(2020, 1, 30), user0);
     public static final Vote VoteUser1January30 = new Vote(VOTE_USER1_30_OF_JANUARY_ID, KebabHouse, LocalDate.of(2020, 1, 30), user1);
@@ -41,15 +39,13 @@ public class VoteTestData {
     public static final Vote VoteUser0Today = new Vote(VOTE_USER0_TODAY_ID, SushiRoll, LocalDate.now(), user0);
     public static final Vote VoteUser1Today = new Vote(VOTE_USER1_TODAY_ID, SushiRoll, LocalDate.now(), user1);
     public static final Vote VoteUser2Today = new Vote(VOTE_USER2_TODAY_ID, SushiRoll, LocalDate.now(), user2);
-    public static final Vote VoteUser3Today = new Vote(VOTE_USER3_TODAY_ID, SushiRoll, LocalDate.now(), user3);
     public static final Vote VoteUser4Today = new Vote(VOTE_USER4_TODAY_ID, PizzaHut, LocalDate.now(), user4);
-    public static final Vote VoteAdminToday = new Vote(VOTE_ADMIN_TODAY_ID, KebabHouse, LocalDate.now(), admin);
 
     public static List<Vote> ALL_VOTES = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30, VoteUser3January30,
             VoteUser4January30, VoteAdminJanuary30, VoteUser0January31, VoteUser3January31, VoteAdminJanuary31,
-            VoteUser0Today, VoteUser1Today, VoteUser2Today, VoteUser3Today, VoteUser4Today, VoteAdminToday);
+            VoteUser0Today, VoteUser1Today, VoteUser2Today, VoteUser4Today);
 
-    public static List<Vote> ALL_VOTES_FROM_USER3 = List.of(VoteUser3January30, VoteUser3January31, VoteUser3Today);
+    public static List<Vote> ALL_VOTES_FROM_USER3 = List.of(VoteUser3January30, VoteUser3January31);
 
     public static List<Vote> ALL_VOTES_FROM_30_OF_JANUARY = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30,
             VoteUser3January30, VoteUser4January30, VoteAdminJanuary30);
@@ -71,6 +67,6 @@ public class VoteTestData {
     }
 
     public static Vote getUpdated() {
-        return new Vote(VOTE_USER3_30_OF_JANUARY_ID, SushiRoll, LocalDate.of(2020, 1, 29), user3);
+        return new Vote(VOTE_USER0_TODAY_ID, PizzaHut, LocalDate.now(), user0);
     }
 }
