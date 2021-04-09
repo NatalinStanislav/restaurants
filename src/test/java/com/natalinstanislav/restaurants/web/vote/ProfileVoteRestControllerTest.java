@@ -60,6 +60,24 @@ class ProfileVoteRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getToday() throws Exception {
+        perform(MockMvcRequestBuilders.get("/profile/votes/today")
+                .with(userHttpBasic(user0)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(VOTE_MATCHER.contentJson(VoteUser0Today));
+    }
+
+    @Test
+    void getTodayNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get("/profile/votes/today")
+                .with(userHttpBasic(user3)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get("/profile/votes/")
                 .with(userHttpBasic(user3)))

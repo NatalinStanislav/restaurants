@@ -2,6 +2,7 @@ package com.natalinstanislav.restaurants.web.vote;
 
 import com.natalinstanislav.restaurants.model.Vote;
 import com.natalinstanislav.restaurants.service.VoteService;
+import com.natalinstanislav.restaurants.web.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,12 @@ public abstract class AbstractVoteController {
 
     public AbstractVoteController(VoteService voteService) {
         this.voteService = voteService;
+    }
+
+    public Vote getToday() {
+        int userId = SecurityUtil.authUserId();
+        log.info("get today's vote for user with id {}", userId);
+        return voteService.getToday(userId);
     }
 
     public Vote get(int id) {

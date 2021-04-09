@@ -27,6 +27,11 @@ public class ProfileVoteRestController extends AbstractVoteController {
         return super.get(id, SecurityUtil.authUserId());
     }
 
+    @GetMapping("/today")
+    public Vote getToday() {
+        return super.getToday();
+    }
+
     @Override
     @GetMapping
     public List<Vote> getAll() {

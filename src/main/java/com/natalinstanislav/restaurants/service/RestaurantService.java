@@ -48,11 +48,11 @@ public class RestaurantService {
         return restaurantRepository.getWithMenu(id, date);
     }
 
-    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         return restaurantRepository.findAll(SORT_NAME);
     }
 
+    @Cacheable("restaurants")
     public List<Restaurant> getAllWithMenu(LocalDate date) {
         return restaurantRepository.getAllWithMenu(date);
     }

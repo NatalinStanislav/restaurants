@@ -93,6 +93,17 @@ public class VoteServiceTest {
     }
 
     @Test
+    void getToday() {
+        Vote user0TodaysVote = voteService.getToday(USER0_ID);
+        VOTE_MATCHER.assertMatch(user0TodaysVote, VoteUser0Today);
+    }
+
+    @Test
+    void getTodayNotFound() {
+        assertThrows(NotFoundException.class, () -> voteService.getToday(USER3_ID));
+    }
+
+    @Test
     void getAll() {
         List<Vote> all = voteService.getAll();
         VOTE_MATCHER.assertMatch(all, ALL_VOTES);

@@ -59,6 +59,14 @@ class AdminVoteRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getToday() throws Exception {
+        perform(MockMvcRequestBuilders.get("/admin/votes/today")
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+    }
+
+    @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete("/admin/votes/" + VOTE_USER3_30_OF_JANUARY_ID)
                 .with(userHttpBasic(admin)))

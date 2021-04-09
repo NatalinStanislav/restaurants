@@ -14,10 +14,10 @@ public class RestaurantTo {
 
     private final List<Dish> dishes;
 
-    private final Integer rating;
+    private final Long rating;
 
     @ConstructorProperties({"id", "name", "dishes", "rating"})
-    public RestaurantTo(Integer id, String name, List<Dish> dishes, Integer rating) {
+    public RestaurantTo(Integer id, String name, List<Dish> dishes, Long rating) {
         this.id = id;
         this.name = name;
         this.dishes = dishes;

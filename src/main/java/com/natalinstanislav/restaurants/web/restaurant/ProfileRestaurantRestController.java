@@ -3,7 +3,6 @@ package com.natalinstanislav.restaurants.web.restaurant;
 import com.natalinstanislav.restaurants.model.Restaurant;
 import com.natalinstanislav.restaurants.service.RestaurantService;
 import com.natalinstanislav.restaurants.service.VoteService;
-import com.natalinstanislav.restaurants.to.RestaurantTo;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +24,5 @@ public class ProfileRestaurantRestController extends AbstractRestaurantControlle
     @GetMapping("/withMenu")
     public List<Restaurant> getAllWithMenu(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return super.getAllWithMenu(date);
-    }
-
-    @GetMapping("/withMenuAndRating")
-    public List<RestaurantTo> getAllWithMenuAndRating(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return super.getAllWithMenuAndRating(date);
     }
 }

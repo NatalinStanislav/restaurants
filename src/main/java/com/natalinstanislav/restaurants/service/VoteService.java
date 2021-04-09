@@ -8,11 +8,13 @@ import com.natalinstanislav.restaurants.util.TimeValidationUtil;
 import com.natalinstanislav.restaurants.util.exception.VoteDuplicateException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFound;
 import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
@@ -31,6 +33,11 @@ public class VoteService {
 
     public void delete(int id) {
         checkNotFoundWithId(voteRepository.delete(id) != 0, id);
+    }
+
+    public Vote getToday(int userId) {
+        LocalDate today = LocalDate.now();
+        return checkNotFound(voteRepository.getToday(today, userId), "date = "+ today + " and userId = " + userId);
     }
 
     public Vote get(int id) {
@@ -67,6 +74,7 @@ public class VoteService {
         checkNotFoundWithId(voteRepository.delete(id, userId) != 0, id);
     }
 
+    @Transactional
     public Vote create(int restaurantId, int userId) {
         LocalDate today = LocalDate.now();
         Vote vote = getByDateAndUser(today, userId);
@@ -80,6 +88,7 @@ public class VoteService {
         return voteRepository.save(vote);
     }
 
+    @Transactional
     public Vote update(Vote vote, int id, int restaurantId, int userId) {
         Assert.notNull(vote, "vote must not be null");
         TimeValidationUtil.checkVoteTime();

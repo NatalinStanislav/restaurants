@@ -5,8 +5,6 @@ import com.natalinstanislav.restaurants.model.User;
 import com.natalinstanislav.restaurants.repository.JpaUserRepository;
 import com.natalinstanislav.restaurants.to.UserTo;
 import com.natalinstanislav.restaurants.util.UserUtil;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Sort;
@@ -45,31 +43,26 @@ public class UserService implements UserDetailsService {
         return checkNotFound(userRepository.getByEmail(email), "email=" + email);
     }
 
-    @Cacheable("users")
     public List<User> getAll() {
         return userRepository.findAll(SORT_NAME_EMAIL);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         return userRepository.save(prepareToSave(user, passwordEncoder));
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
         userRepository.save(prepareToSave(user, passwordEncoder));
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void update(UserTo userTo, int id) {
         User user = get(id);
         userRepository.save(prepareToSave((UserUtil.updateFromTo(user, userTo)), passwordEncoder));
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         checkNotFoundWithId(userRepository.delete(id) != 0, id);
     }
@@ -78,7 +71,6 @@ public class UserService implements UserDetailsService {
         return checkNotFoundWithId(userRepository.getWithVotes(id), id);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void enable(int id, boolean enabled) {
         User user = get(id);

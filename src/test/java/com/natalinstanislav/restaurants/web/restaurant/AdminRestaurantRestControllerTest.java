@@ -145,7 +145,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void getWithMenuAndRating() throws Exception {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
-        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, 3);
+        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, (long) 3);
 
         perform(MockMvcRequestBuilders.get("/admin/restaurants/" + PIZZA_HUT_ID + "/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY)
                 .with(userHttpBasic(admin)))
@@ -160,9 +160,9 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         PizzaHut.setDishes(ALL_DISHES_FROM_PIZZA_HUT_30_OF_JANUARY);
         SushiRoll.setDishes(ALL_DISHES_FROM_SUSHI_ROLL_30_OF_JANUARY);
         KebabHouse.setDishes(ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY);
-        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, 3);
-        RestaurantTo sushiRollTo = RestaurantUtil.createTo(SushiRoll, 1);
-        RestaurantTo kebabHouseTo = RestaurantUtil.createTo(KebabHouse, 2);
+        RestaurantTo pizzaHutTo = RestaurantUtil.createTo(PizzaHut, (long) 3);
+        RestaurantTo sushiRollTo = RestaurantUtil.createTo(SushiRoll, (long) 1);
+        RestaurantTo kebabHouseTo = RestaurantUtil.createTo(KebabHouse, (long) 2);
 
         perform(MockMvcRequestBuilders.get("/admin/restaurants/withMenuAndRating?date=" + LOCALDATE_30_OF_JANUARY)
                 .with(userHttpBasic(admin)))

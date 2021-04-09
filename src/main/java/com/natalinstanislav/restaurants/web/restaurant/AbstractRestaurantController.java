@@ -8,7 +8,6 @@ import com.natalinstanislav.restaurants.util.RestaurantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.natalinstanislav.restaurants.util.ValidationUtil.*;
-import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFoundWithId;
 
 public abstract class AbstractRestaurantController {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -44,7 +42,7 @@ public abstract class AbstractRestaurantController {
     public RestaurantTo getWithMenuAndRating(int id, LocalDate date) {
         log.info("getWithMenuAndRating restaurant with id {} with menu from date {}", id, date);
         Restaurant restaurant = restaurantService.getWithMenu(id, date);
-        int rating = voteService.getAllByDateForRestaurant(date, id).size();
+        long rating = voteService.getAllByDateForRestaurant(date, id).size();
         return RestaurantUtil.createTo(restaurant, rating);
     }
 
@@ -66,7 +64,7 @@ public abstract class AbstractRestaurantController {
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate date) {
         log.info("getAllWithMenuAndRating from date {}", date);
         List<Restaurant> restaurants = restaurantService.getAllWithMenu(date);
-        Map<Restaurant, Integer> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteService.getAllByDate(date));
+        Map<Restaurant, Long> restaurantRatingMap = RestaurantUtil.getRestaurantRatingMap(voteService.getAllByDate(date));
         return RestaurantUtil.getTos(restaurants, restaurantRatingMap);
     }
 
