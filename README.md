@@ -13,7 +13,7 @@ The application provides the following requirements:
     - If it is before 11:00 it's asume that he changed his mind.
     - If it is after 11:00 then it is too late, vote can't be changed
     
-#####USER-available operations:  
+#####USER-available operations:
 - get list of restaurants with menu for current date (or any specified date)
 - vote for the restaurant (once a day)
 - get today's USER vote
@@ -21,7 +21,7 @@ The application provides the following requirements:
 - CRUD operations with USER account(register, delete, update, get)
 - get USER account with all votes for all time
     
-#####ADMIN-available operations:  
+#####ADMIN-available operations:
 - CRUD operations for creating and redacting restaurants
 - CRUD operations for creating and redacting dishes for restaurants 
 - get restaurant (or restaurants) with it's rating for given date. Rating based on count of votes for the restaurant for given date 
