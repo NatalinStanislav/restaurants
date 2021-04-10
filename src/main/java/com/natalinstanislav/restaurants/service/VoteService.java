@@ -6,7 +6,6 @@ import com.natalinstanislav.restaurants.repository.JpaUserRepository;
 import com.natalinstanislav.restaurants.repository.JpaVoteRepository;
 import com.natalinstanislav.restaurants.util.TimeValidationUtil;
 import com.natalinstanislav.restaurants.util.exception.VoteDuplicateException;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -19,7 +18,6 @@ import static com.natalinstanislav.restaurants.util.ValidationUtil.checkNotFound
 
 @Service
 public class VoteService {
-    private static final Sort SORT_DATETIME = Sort.by(Sort.Direction.ASC, "voteDate", "id");
 
     private final JpaVoteRepository voteRepository;
     private final JpaRestaurantRepository restaurantRepository;
@@ -31,31 +29,18 @@ public class VoteService {
         this.userRepository = userRepository;
     }
 
-    public void delete(int id) {
-        checkNotFoundWithId(voteRepository.delete(id) != 0, id);
+    public void deleteToday(int userId) {
+        LocalDate today = LocalDate.now();
+        checkNotFound(voteRepository.deleteToday(today, userId) != 0, "date = " + today + " and userId = " + userId);
     }
 
     public Vote getToday(int userId) {
         LocalDate today = LocalDate.now();
-        return checkNotFound(voteRepository.getToday(today, userId), "date = "+ today + " and userId = " + userId);
-    }
-
-    public Vote get(int id) {
-        return checkNotFoundWithId(voteRepository.findById(id).orElse(null), id);
-    }
-
-    public Vote get(int id, int userId) {
-        return checkNotFoundWithId(voteRepository.findById(id)
-                .filter(vote -> vote.getUser().getId() == userId)
-                .orElse(null), id);
+        return checkNotFound(voteRepository.getToday(today, userId), "date = " + today + " and userId = " + userId);
     }
 
     public Vote getByDateAndUser(LocalDate date, int userId) {
         return voteRepository.getByDateAndUser(date, userId);
-    }
-
-    public List<Vote> getAll() {
-        return voteRepository.findAll(SORT_DATETIME);
     }
 
     public List<Vote> getAllFromUser(int userId) {
@@ -68,10 +53,6 @@ public class VoteService {
 
     public List<Vote> getAllByDateForRestaurant(LocalDate date, int restaurantId) {
         return voteRepository.getAllByDateForRestaurant(date, restaurantId);
-    }
-
-    public void delete(int id, int userId) {
-        checkNotFoundWithId(voteRepository.delete(id, userId) != 0, id);
     }
 
     @Transactional

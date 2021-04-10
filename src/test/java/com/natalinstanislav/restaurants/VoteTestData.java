@@ -41,10 +41,6 @@ public class VoteTestData {
     public static final Vote VoteUser2Today = new Vote(VOTE_USER2_TODAY_ID, SushiRoll, LocalDate.now(), user2);
     public static final Vote VoteUser4Today = new Vote(VOTE_USER4_TODAY_ID, PizzaHut, LocalDate.now(), user4);
 
-    public static List<Vote> ALL_VOTES = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30, VoteUser3January30,
-            VoteUser4January30, VoteAdminJanuary30, VoteUser0January31, VoteUser3January31, VoteAdminJanuary31,
-            VoteUser0Today, VoteUser1Today, VoteUser2Today, VoteUser4Today);
-
     public static List<Vote> ALL_VOTES_FROM_USER3 = List.of(VoteUser3January30, VoteUser3January31);
 
     public static List<Vote> ALL_VOTES_FROM_30_OF_JANUARY = List.of(VoteUser0January30, VoteUser1January30, VoteUser2January30,
@@ -55,12 +51,6 @@ public class VoteTestData {
     public static LocalDate LOCAL_DATE_30_OF_JANUARY = LocalDate.of(2020, 1, 30);
 
     public static String ISO_30_OF_JANUARY = "2020-01-30";
-
-    public static String ISO_29_OF_JANUARY_TIME = "2020-01-29T10:20:30";
-
-    public static Vote getNew() {
-        return new Vote(null, LocalDate.of(2020, 1, 29));
-    }
 
     public static Vote getNewNow() {
         return new Vote(null, LocalDate.now());

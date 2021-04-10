@@ -1,9 +1,8 @@
 package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Restaurant;
-import com.natalinstanislav.restaurants.service.RestaurantService;
+import com.natalinstanislav.restaurants.repository.util.JpaUtil;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import static com.natalinstanislav.restaurants.DishTestData.ALL_DISHES_FROM_SUSH
 import static com.natalinstanislav.restaurants.DishTestData.LOCALDATE_30_OF_JANUARY;
 
 import static com.natalinstanislav.restaurants.RestaurantTestData.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig(locations = {
@@ -34,11 +32,15 @@ public class RestaurantServiceTest {
     protected RestaurantService service;
 
     @Autowired
+    protected JpaUtil jpaUtil;
+
+    @Autowired
     private CacheManager cacheManager;
 
     @BeforeEach
     public void setUp() throws Exception {
         cacheManager.getCache("restaurants").clear();
+        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test

@@ -2,13 +2,9 @@ package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Role;
 import com.natalinstanislav.restaurants.model.User;
-import com.natalinstanislav.restaurants.repository.util.JpaUtil;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -30,18 +26,6 @@ public class UserServiceTest {
 
     @Autowired
     protected UserService userService;
-
-    @Autowired
-    protected JpaUtil jpaUtil;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        cacheManager.getCache("users").clear();
-        jpaUtil.clear2ndLevelHibernateCache();
-    }
 
     @Test
     void get() {

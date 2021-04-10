@@ -11,7 +11,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
+
+import static com.natalinstanislav.restaurants.util.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(value = "/profile/votes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,26 +22,26 @@ public class ProfileVoteRestController extends AbstractVoteController {
         super(voteService);
     }
 
-    @Override
-    @GetMapping("/{id}")
-    public Vote get(@PathVariable int id) {
-        return super.get(id, SecurityUtil.authUserId());
-    }
-
     @GetMapping("/today")
     public Vote getToday() {
-        return super.getToday();
+        int userId = SecurityUtil.authUserId();
+        log.info("get today's vote for user with id {}", userId);
+        return voteService.getToday(userId);
     }
 
-    @Override
-    @GetMapping
-    public List<Vote> getAll() {
-        return super.getAllFromUser(SecurityUtil.authUserId());
+    @DeleteMapping("/today")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteToday() {
+        int userId = SecurityUtil.authUserId();
+        log.info("delete today's vote for user with id {}", userId);
+        voteService.deleteToday(userId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurantId) {
-        Vote vote = super.create(restaurantId, SecurityUtil.authUserId());
+        int userId = SecurityUtil.authUserId();
+        log.info("create vote for restaurant with id {} by user with id {}", restaurantId, userId);
+        Vote vote = voteService.create(restaurantId, userId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/profile/votes" + "/{id}")
                 .buildAndExpand(vote.getId()).toUri();
@@ -50,6 +51,8 @@ public class ProfileVoteRestController extends AbstractVoteController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public Vote update(@RequestBody @Valid Vote vote, @PathVariable int id, @RequestParam int restaurantId) {
-        return super.update(vote, id, restaurantId, SecurityUtil.authUserId());
+        log.info("update {} with id={}", vote, id);
+        assureIdConsistent(vote, id);
+        return voteService.update(vote, id, restaurantId, SecurityUtil.authUserId());
     }
 }

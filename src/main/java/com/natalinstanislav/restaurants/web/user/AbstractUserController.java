@@ -6,7 +6,6 @@ import com.natalinstanislav.restaurants.to.UserTo;
 import com.natalinstanislav.restaurants.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.List;
 

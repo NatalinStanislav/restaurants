@@ -2,13 +2,11 @@ package com.natalinstanislav.restaurants.service;
 
 import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

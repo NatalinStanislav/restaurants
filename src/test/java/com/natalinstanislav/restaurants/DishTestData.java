@@ -74,8 +74,6 @@ public class DishTestData {
 
     public static List<Dish> ALL_DISHES_FROM_KEBAB_HOUSE_30_OF_JANUARY = List.of(KebabXXL, GarlicSauce, Beer);
 
-    public static List<Dish> RANDOM_DISHES = List.of(KebabXXL, PhiladelphiaRoll, MexicanPizza);
-
     public static Dish getNew() {
         return new Dish(null, "NewDish", 444, LocalDate.of(2020, 1, 29));
     }
