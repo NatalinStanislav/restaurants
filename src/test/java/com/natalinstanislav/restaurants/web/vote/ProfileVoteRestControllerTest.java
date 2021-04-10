@@ -4,7 +4,6 @@ import com.natalinstanislav.restaurants.VoteTestData;
 import com.natalinstanislav.restaurants.model.Vote;
 import com.natalinstanislav.restaurants.service.VoteService;
 import com.natalinstanislav.restaurants.util.exception.ErrorType;
-import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import com.natalinstanislav.restaurants.web.AbstractControllerTest;
 import com.natalinstanislav.restaurants.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import static com.natalinstanislav.restaurants.TestUtil.readFromJson;
 import static com.natalinstanislav.restaurants.TestUtil.userHttpBasic;
 import static com.natalinstanislav.restaurants.UserTestData.*;
 import static com.natalinstanislav.restaurants.VoteTestData.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,23 +49,6 @@ class ProfileVoteRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user3)))
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print());
-    }
-
-    @Test
-    void deleteToday() throws Exception {
-        perform(MockMvcRequestBuilders.delete("/profile/votes/today")
-                .with(userHttpBasic(user0)))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> voteService.getToday(USER0_ID));
-    }
-
-    @Test
-    void deleteTodayNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.delete("/profile/votes/today")
-                .with(userHttpBasic(user3)))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

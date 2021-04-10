@@ -18,7 +18,7 @@ public interface JpaUserRepository extends JpaRepository<User, Integer> {
     User getByEmail(String email);
 
     //    https://stackoverflow.com/a/46013654/548473
-    @EntityGraph(attributePaths = {"votes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = {"votes", "votes.restaurant"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.id=?1")
     User getWithVotes(int id);
 }

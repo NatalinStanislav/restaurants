@@ -56,6 +56,8 @@ public class DishTestData {
     public static final Dish TodayGarlicSauce = new Dish(TODAY_GARLIC_SAUCE_ID, "Today Garlic sauce", 99, KebabHouse, LocalDate.now());
     public static final Dish TodayBeer = new Dish(TODAY_BEER_ID, "Today Beer", 399, KebabHouse, LocalDate.now());
 
+    public static final Dish MexicanPizzaClone = new Dish(null, "Mexican pizza", 888, PizzaHut, LocalDate.of(2020, 1, 30));
+
     public static String ISO_30_OF_JANUARY = "2020-01-30";
     public static LocalDate LOCALDATE_30_OF_JANUARY = LocalDate.of(2020, 1, 30);
 

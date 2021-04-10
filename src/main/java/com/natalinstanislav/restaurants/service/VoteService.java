@@ -29,11 +29,6 @@ public class VoteService {
         this.userRepository = userRepository;
     }
 
-    public void deleteToday(int userId) {
-        LocalDate today = LocalDate.now();
-        checkNotFound(voteRepository.deleteToday(today, userId) != 0, "date = " + today + " and userId = " + userId);
-    }
-
     public Vote getToday(int userId) {
         LocalDate today = LocalDate.now();
         return checkNotFound(voteRepository.getToday(today, userId), "date = " + today + " and userId = " + userId);

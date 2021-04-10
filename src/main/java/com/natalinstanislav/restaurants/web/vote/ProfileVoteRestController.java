@@ -29,14 +29,6 @@ public class ProfileVoteRestController extends AbstractVoteController {
         return voteService.getToday(userId);
     }
 
-    @DeleteMapping("/today")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteToday() {
-        int userId = SecurityUtil.authUserId();
-        log.info("delete today's vote for user with id {}", userId);
-        voteService.deleteToday(userId);
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurantId) {
         int userId = SecurityUtil.authUserId();
@@ -50,7 +42,7 @@ public class ProfileVoteRestController extends AbstractVoteController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public Vote update(@RequestBody @Valid Vote vote, @PathVariable int id, @RequestParam int restaurantId) {
+    public Vote update(@RequestBody Vote vote, @PathVariable int id, @RequestParam int restaurantId) {
         log.info("update {} with id={}", vote, id);
         assureIdConsistent(vote, id);
         return voteService.update(vote, id, restaurantId, SecurityUtil.authUserId());

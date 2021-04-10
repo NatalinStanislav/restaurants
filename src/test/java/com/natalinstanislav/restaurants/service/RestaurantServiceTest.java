@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -51,6 +52,13 @@ public class RestaurantServiceTest {
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
         RESTAURANT_MATCHER.assertMatch(service.get(newId), newRestaurant);
+    }
+
+    @Test
+    void createDuplicateName() {
+        Restaurant newRestaurant = getNew();
+        newRestaurant.setName("Pizza Hut");
+        assertThrows(DataAccessException.class, () -> service.create(newRestaurant));
     }
 
     @Test

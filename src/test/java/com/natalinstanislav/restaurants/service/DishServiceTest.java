@@ -4,6 +4,7 @@ import com.natalinstanislav.restaurants.model.Dish;
 import com.natalinstanislav.restaurants.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -33,6 +34,12 @@ public class DishServiceTest {
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
         DISH_MATCHER.assertMatch(service.get(newId), newDish);
+    }
+
+    @Test
+    void createDuplicate() throws Exception {
+        assertThrows(DataAccessException.class, () ->
+                service.create(MexicanPizzaClone, PIZZA_HUT_ID));
     }
 
     @Test
